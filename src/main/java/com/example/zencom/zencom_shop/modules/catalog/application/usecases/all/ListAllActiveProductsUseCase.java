@@ -6,9 +6,9 @@ import com.example.zencom.zencom_shop.modules.catalog.application.ports.ProductR
 
 import java.util.List;
 
-public class ListAllActiveProducts {
+public class ListAllActiveProductsUseCase {
     private final ProductRepository productRepository;
-    public ListAllActiveProducts(ProductRepository productRepository) {
+    public ListAllActiveProductsUseCase(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
     public List<ProductResultDTO> getAllActiveProducts() {

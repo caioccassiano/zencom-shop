@@ -5,18 +5,20 @@ import com.example.zencom.zencom_shop.modules.catalog.application.exceptions.Pro
 import com.example.zencom.zencom_shop.modules.catalog.application.mappers.ProductResultMapper;
 import com.example.zencom.zencom_shop.modules.catalog.application.ports.ProductRepository;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.Product;
-import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 
-public class GetProductById {
+public class GetProductByNameUseCase {
     private final ProductRepository productRepository;
-    public GetProductById(ProductRepository productRepository) {
+
+    public GetProductByNameUseCase(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
-    public ProductResultDTO getProductById(ProductId id) {
-        Product product = productRepository.findById(id).orElseThrow(ProductDoesNotExistException::new);
+    public ProductResultDTO getProductByName(String name) {
+        Product product = productRepository.findByName(name)
+                .orElseThrow(ProductDoesNotExistException::new);
         return ProductResultMapper.toResult(product);
     }
 }
+
 
 
