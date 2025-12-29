@@ -1,6 +1,7 @@
 package com.example.zencom.zencom_shop.modules.catalog.domain.entities;
 
 import com.example.zencom.zencom_shop.modules.catalog.domain.enums.ProductStatus;
+import com.example.zencom.zencom_shop.modules.catalog.domain.exceptions.InvalidPriceException;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 
 import java.math.BigDecimal;
@@ -39,7 +40,9 @@ public class Product {
             String name,
             String description,
             BigDecimal price){
+        validatePrice(price);
         var now = Instant.now();
+
         return new Product(
                 ProductId.newId(),
                 name,
@@ -61,6 +64,12 @@ public class Product {
         if(status == null) throw  new IllegalStateException("Status is null");
         this.status = newStatus;
         touch();
+    }
+
+    private static void validatePrice(BigDecimal price) {
+        if (price == null || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new InvalidPriceException();
+        }
     }
     private void setName(String name) {
         if (name == null || name.isBlank())
@@ -89,6 +98,9 @@ public class Product {
 
     public ProductId getId() {
         return id;
+    }
+    public String getName() {
+        return name;
     }
 
     public String getDescription() {
