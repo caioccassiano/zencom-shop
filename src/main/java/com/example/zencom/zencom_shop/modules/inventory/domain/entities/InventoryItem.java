@@ -1,5 +1,7 @@
 package com.example.zencom.zencom_shop.modules.inventory.domain.entities;
 
+import com.example.zencom.zencom_shop.modules.inventory.domain.exceptions.InsufficientReservedStockException;
+import com.example.zencom.zencom_shop.modules.inventory.domain.exceptions.InvalidStockQuantityException;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 
 import java.time.Instant;
@@ -36,7 +38,7 @@ public class InventoryItem {
 
     //Add Stock (ADMIN only)
     public void addStock(int quantity){
-        if(quantity <= 0) throw new IllegalArgumentException("quantity must be positive");
+        if(quantity <= 0) throw new InvalidStockQuantityException();
         this.availableQuantity += quantity;
         touch();
     }
@@ -44,7 +46,7 @@ public class InventoryItem {
     //Reserve: move from available -> reserved
     // It avoids oversell (available gets subtract as soon as a reservation is made)
     public void reserveStock(int quantity){
-        if(quantity < 0) throw new IllegalArgumentException("quantity cannot be negative");
+        if(quantity < 0) throw new InvalidStockQuantityException();
         this.reservedQuantity -= quantity;
         this.reservedQuantity += quantity;
         touch();
@@ -52,8 +54,8 @@ public class InventoryItem {
 
     // Release stock from Reserved -> Available (e.g: when an order is not approved)
     public void releaseStock(int quantity){
-        if(quantity < 0) throw new IllegalArgumentException("quantity cannot be negative");
-        if(this.reservedQuantity < quantity) throw new IllegalArgumentException("not enough reserved stock to release");
+        if(quantity < 0) throw new InvalidStockQuantityException();
+        if(this.reservedQuantity < quantity) throw new InsufficientReservedStockException();
         this.availableQuantity -= quantity;
         this.availableQuantity += quantity;
         touch();
@@ -61,8 +63,8 @@ public class InventoryItem {
 
     //Confirm product has been sold. Subtracts from reservedStock
     public void commit(int quantity){
-        if(quantity <= 0) throw new IllegalArgumentException("quantity cannot be negative");
-        if(this.reservedQuantity < quantity) throw new IllegalArgumentException("not enough reserved stock to commit");
+        if(quantity <= 0) throw new InvalidStockQuantityException();
+        if(this.reservedQuantity < quantity) throw new InsufficientReservedStockException();
         this.reservedQuantity -= quantity;
         touch();
     }
