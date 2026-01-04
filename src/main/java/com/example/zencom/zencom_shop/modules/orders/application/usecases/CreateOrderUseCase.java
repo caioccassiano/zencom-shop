@@ -1,0 +1,114 @@
+package com.example.zencom.zencom_shop.modules.orders.application.usecases;
+
+import com.example.zencom.zencom_shop.modules.orders.application.dtos.input.CreateOrderCommand;
+import com.example.zencom.zencom_shop.modules.orders.application.dtos.input.CreateOrderItemDTO;
+import com.example.zencom.zencom_shop.modules.orders.application.dtos.output.OrderResultDTO;
+import com.example.zencom.zencom_shop.modules.orders.application.exception.InvalidOrderCommandException;
+import com.example.zencom.zencom_shop.modules.orders.application.exception.ProductHasNotEnoughStockException;
+import com.example.zencom.zencom_shop.modules.orders.application.exception.ProductNotFoundException;
+import com.example.zencom.zencom_shop.modules.orders.application.mappers.OrderResultMapper;
+import com.example.zencom.zencom_shop.modules.orders.application.ports.catalog.ProductCatalogPort;
+import com.example.zencom.zencom_shop.modules.orders.application.ports.inventory.InventoryPort;
+import com.example.zencom.zencom_shop.modules.orders.application.ports.orders.OrdersRepository;
+import com.example.zencom.zencom_shop.modules.orders.domain.entities.Order;
+import com.example.zencom.zencom_shop.modules.orders.domain.entities.OrderItem;
+import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+public class CreateOrderUseCase {
+
+    private final OrdersRepository ordersRepository;
+    private final InventoryPort inventoryPort;
+    private final ProductCatalogPort productCatalogPort;
+
+    public CreateOrderUseCase(
+            OrdersRepository ordersRepository, InventoryPort inventoryPort, ProductCatalogPort productCatalogPort
+    ){
+        this.ordersRepository = ordersRepository;
+        this.inventoryPort = inventoryPort;
+        this.productCatalogPort = productCatalogPort;
+    }
+
+    public OrderResultDTO execute(CreateOrderCommand command){
+        validateCommand(command);
+        List<OrderItem> orderItems = command.items()
+                .stream()
+                .map(this::processItem)
+                .toList();
+        Order order = Order.create(
+                command.userId(),
+                orderItems
+        );
+        applyDiscountIfNeeded(order, command.discount());
+
+        Order saved = this.ordersRepository.save(order);
+
+        //Future implementing CreatePaymentOrder event
+
+        return OrderResultMapper.toDto(saved);
+
+
+
+    }
+
+    private OrderItem processItem(CreateOrderItemDTO dto) {
+        ProductId productId = ProductId.from(dto.productId());
+
+        ProductCatalogPort.ProductSnapshot product = findActiveProduct(productId);
+        ensureHasAvailableStock(productId, dto.quantity());
+        inventoryPort.reserve(productId, dto.quantity());
+        return OrderItem.create(
+                product.productId(),
+                product.name(),
+                product.price(),
+                dto.quantity()
+        );
+
+    }
+
+    private ProductCatalogPort.ProductSnapshot findActiveProduct(ProductId productId) {
+        return productCatalogPort.findActiveById(productId)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+    }
+
+    private void ensureHasAvailableStock(ProductId productId, int quantity) {
+        if(!inventoryPort.hasAvailable(productId, quantity)){
+            throw new ProductHasNotEnoughStockException("Product has not enough stock");
+        }
+    }
+
+    private void applyDiscountIfNeeded(Order order, BigDecimal discount) {
+        if(discount == null|| discount.equals(BigDecimal.ZERO)) return;
+        order.applyDiscount(discount);
+    }
+
+
+
+
+
+    private void validateCommand(CreateOrderCommand command){
+        if (command == null) {
+            throw new InvalidOrderCommandException("command cannot be null");
+        }
+        if (command.userId() == null) {
+            throw new InvalidOrderCommandException("userId cannot be null");
+        }
+        if (command.items() == null || command.items().isEmpty()) {
+            throw new InvalidOrderCommandException("items cannot be empty");
+        }
+        for (CreateOrderItemDTO item : command.items()) {
+            if (item == null) throw new InvalidOrderCommandException("item cannot be null");
+            if (item.productId() == null) {
+                throw new InvalidOrderCommandException("productId cannot be blank");
+            }
+            if (item.quantity() <= 0) {
+                throw new InvalidOrderCommandException("quantity must be > 0");
+            }
+        }
+    }
+
+
+
+}
