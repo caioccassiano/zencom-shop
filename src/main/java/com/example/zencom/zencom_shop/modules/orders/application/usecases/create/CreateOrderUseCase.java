@@ -1,4 +1,4 @@
-package com.example.zencom.zencom_shop.modules.orders.application.usecases;
+package com.example.zencom.zencom_shop.modules.orders.application.usecases.create;
 
 import com.example.zencom.zencom_shop.modules.orders.application.dtos.input.CreateOrderCommand;
 import com.example.zencom.zencom_shop.modules.orders.application.dtos.input.CreateOrderItemDTO;

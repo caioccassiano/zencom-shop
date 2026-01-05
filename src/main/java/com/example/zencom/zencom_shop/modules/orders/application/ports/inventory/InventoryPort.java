@@ -10,4 +10,8 @@ public interface InventoryPort {
     //Reserve X quantity of a product when an Order is created
     void reserve(ProductId productId, int quantity);
 
+    void commit(ProductId productId, int quantity);
+
+    void release(ProductId productId, int quantity);
+
 }

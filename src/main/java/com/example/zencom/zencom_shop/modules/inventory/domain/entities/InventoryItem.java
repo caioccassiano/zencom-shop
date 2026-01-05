@@ -47,6 +47,7 @@ public class InventoryItem {
     // It avoids oversell (available gets subtract as soon as a reservation is made)
     public void reserveStock(int quantity){
         if(quantity < 0) throw new InvalidStockQuantityException();
+        if(this.availableQuantity < quantity) throw new InvalidStockQuantityException();
         this.availableQuantity -= quantity;
         this.reservedQuantity += quantity;
         touch();

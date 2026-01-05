@@ -25,6 +25,14 @@ public final class OrderId {
             throw new IllegalArgumentException(orderId);
         }
     }
+
+    public static OrderId from_UUID(UUID orderId) {
+        if(orderId == null) {
+            throw new IllegalArgumentException("orderId cannot be null");
+        }
+        return new OrderId(orderId);
+    }
+
     public UUID getId() {
         return id;
     }
