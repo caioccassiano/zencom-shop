@@ -23,6 +23,11 @@ public final class ProductId {
         }
     }
 
+    public static ProductId from_UUID (UUID id) {
+        return new ProductId(id);
+    }
+
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ProductId)) return false;

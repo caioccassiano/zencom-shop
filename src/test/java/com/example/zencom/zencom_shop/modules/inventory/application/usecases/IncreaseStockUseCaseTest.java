@@ -3,6 +3,7 @@ package com.example.zencom.zencom_shop.modules.inventory.application.usecases;
 import com.example.zencom.zencom_shop.modules.inventory.application.dtos.input.AddStockCommandDTO;
 import com.example.zencom.zencom_shop.modules.inventory.application.exceptions.InventoryItemNotFoundException;
 import com.example.zencom.zencom_shop.modules.inventory.application.ports.InventoryRepository;
+import com.example.zencom.zencom_shop.modules.inventory.application.usecases.stock.IncreaseStockUseCase;
 import com.example.zencom.zencom_shop.modules.inventory.domain.entities.InventoryItem;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 import org.junit.jupiter.api.BeforeEach;

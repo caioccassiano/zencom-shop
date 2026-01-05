@@ -17,11 +17,11 @@ public class CreateInventoryUseCase {
         if(command == null){
             throw new IllegalArgumentException("CreateInventoryItemCommand argument is null");
         }
-        ProductId product = command.productId();
-        if(inventoryRepository.existsByProductId(product)){
+        ProductId productId = ProductId.from_UUID(command.productId());
+        if(inventoryRepository.existsByProductId(productId)){
             return;
         }
-        InventoryItem inventoryItem = InventoryItem.create(product);
+        InventoryItem inventoryItem = InventoryItem.create(productId);
         inventoryRepository.save(inventoryItem);
     }
 }

@@ -1,9 +1,10 @@
-package com.example.zencom.zencom_shop.modules.inventory.application.usecases;
+package com.example.zencom.zencom_shop.modules.inventory.application.usecases.stock;
 
 import com.example.zencom.zencom_shop.modules.inventory.application.dtos.input.AddStockCommandDTO;
 import com.example.zencom.zencom_shop.modules.inventory.application.exceptions.InventoryItemNotFoundException;
 import com.example.zencom.zencom_shop.modules.inventory.application.ports.InventoryRepository;
 import com.example.zencom.zencom_shop.modules.inventory.domain.entities.InventoryItem;
+import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 
 public class IncreaseStockUseCase {
 
@@ -17,7 +18,8 @@ public class IncreaseStockUseCase {
         if(command.productId() == null) {
             return;
         }
-        InventoryItem item = this.inventoryRepository.findByProductId(command.productId())
+        ProductId productId = ProductId.from_UUID(command.productId());
+        InventoryItem item = this.inventoryRepository.findByProductId(productId)
                 .orElseThrow(InventoryItemNotFoundException::new);
         item.addStock(command.quantity());
         this.inventoryRepository.save(item);

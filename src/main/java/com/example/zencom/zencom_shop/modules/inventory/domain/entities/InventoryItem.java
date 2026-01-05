@@ -10,7 +10,7 @@ public class InventoryItem {
     private final ProductId productId;
     private int availableQuantity;
     private int reservedQuantity;
-    private Instant createdAt;
+    private final Instant createdAt;
     private Instant updatedAt;
 
     private InventoryItem(ProductId productId,
@@ -56,7 +56,7 @@ public class InventoryItem {
     public void releaseStock(int quantity){
         if(quantity < 0) throw new InvalidStockQuantityException();
         if(this.reservedQuantity < quantity) throw new InsufficientReservedStockException();
-        this.availableQuantity -= quantity;
+        this.reservedQuantity -= quantity;
         this.availableQuantity += quantity;
         touch();
     }
@@ -68,7 +68,6 @@ public class InventoryItem {
         this.reservedQuantity -= quantity;
         touch();
     }
-
 
     public void touch(){
         this.updatedAt = Instant.now();

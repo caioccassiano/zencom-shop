@@ -1,24 +1,27 @@
-package com.example.zencom.zencom_shop.modules.inventory.application.usecases;
+package com.example.zencom.zencom_shop.modules.inventory.application.usecases.stock;
 
-import com.example.zencom.zencom_shop.modules.inventory.application.dtos.input.GetInventoryItemByIdCommand;
-import com.example.zencom.zencom_shop.modules.inventory.application.dtos.output.InventoryItemResultDTO;
+import com.example.zencom.zencom_shop.modules.inventory.application.dtos.input.ReleaseStockCommandDTO;
 import com.example.zencom.zencom_shop.modules.inventory.application.exceptions.InventoryItemNotFoundException;
-import com.example.zencom.zencom_shop.modules.inventory.application.mappers.InventoryItemResultMapper;
 import com.example.zencom.zencom_shop.modules.inventory.application.ports.InventoryRepository;
 import com.example.zencom.zencom_shop.modules.inventory.domain.entities.InventoryItem;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 
-public class GetInventoryByIdUseCase {
+public class ReleaseStockUseCase {
     private final InventoryRepository inventoryRepository;
 
-    public GetInventoryByIdUseCase(InventoryRepository inventoryRepository) {
+    public ReleaseStockUseCase(InventoryRepository inventoryRepository) {
         this.inventoryRepository = inventoryRepository;
     }
 
-    public InventoryItemResultDTO execute(GetInventoryItemByIdCommand command) {
+    public void execute(ReleaseStockCommandDTO command) {
+        if(command.productId()==null){
+            throw  new IllegalArgumentException("Product Id is required");
+        }
         ProductId productId = ProductId.from_UUID(command.productId());
         InventoryItem item = this.inventoryRepository.findByProductId(productId)
                 .orElseThrow(InventoryItemNotFoundException::new);
-        return InventoryItemResultMapper.toDTO(item);
+        item.releaseStock(command.quantity());
+        this.inventoryRepository.save(item);
+
     }
 }
