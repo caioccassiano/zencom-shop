@@ -7,6 +7,8 @@ import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -23,26 +25,26 @@ class CreateInventoryUseCaseTest {
 
     @Test
     void should_create_inventory_when_not_exists() {
-        ProductId productId = ProductId.newId();
+        UUID productId = UUID.randomUUID();
         CreateInventoryItemCommand command = new CreateInventoryItemCommand(productId);
 
-        when(inventoryRepository.existsByProductId(productId)).thenReturn(false);
+        when(inventoryRepository.existsByProductId(ProductId.from_UUID(productId))).thenReturn(false);
 
         createInventoryUseCase.execute(command);
 
-        verify(inventoryRepository, times(1)).existsByProductId(productId);
+        verify(inventoryRepository, times(1)).existsByProductId(ProductId.from_UUID(productId));
         verify(inventoryRepository, times(1)).save(any(InventoryItem.class));
         verifyNoMoreInteractions(inventoryRepository);
     }
 
     @Test
     void should_not_create_inventory_when_exists() {
-        ProductId productId = ProductId.newId();
+        UUID productId = UUID.randomUUID();
         CreateInventoryItemCommand command = new CreateInventoryItemCommand(productId);
-        when(inventoryRepository.existsByProductId(productId)).thenReturn(true);
+        when(inventoryRepository.existsByProductId(ProductId.from_UUID(productId))).thenReturn(true);
         createInventoryUseCase.execute(command);
 
-        verify(inventoryRepository, times(1)).existsByProductId(productId);
+        verify(inventoryRepository, times(1)).existsByProductId(ProductId.from_UUID(productId));
         verify(inventoryRepository,never()).save(any(InventoryItem.class));
         verifyNoMoreInteractions(inventoryRepository);
     }

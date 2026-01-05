@@ -9,6 +9,7 @@ import com.example.zencom.zencom_shop.modules.orders.application.exception.Produ
 import com.example.zencom.zencom_shop.modules.orders.application.ports.catalog.ProductCatalogPort;
 import com.example.zencom.zencom_shop.modules.orders.application.ports.inventory.InventoryPort;
 import com.example.zencom.zencom_shop.modules.orders.application.ports.orders.OrdersRepository;
+import com.example.zencom.zencom_shop.modules.orders.application.usecases.create.CreateOrderUseCase;
 import com.example.zencom.zencom_shop.modules.orders.domain.entities.Order;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 import org.junit.jupiter.api.BeforeEach;

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -26,25 +27,25 @@ class GetInventoryByIdUseCaseTest {
 
     @Test
     void should_return_an_item_when_found() {
-        ProductId productId = ProductId.newId();
-        InventoryItem item = InventoryItem.create(productId);
+        UUID productId = UUID.randomUUID();
+        InventoryItem item = InventoryItem.create(ProductId.from_UUID(productId));
 
-        when(inventoryRepository.findByProductId(productId)).thenReturn(Optional.of(item));
+        when(inventoryRepository.findByProductId(ProductId.from_UUID(productId))).thenReturn(Optional.of(item));
 
-        InventoryItemResultDTO result = getInventoryByIdUseCase.execute(new GetInventoryItemByIdCommand(productId.asString()));
+        InventoryItemResultDTO result = getInventoryByIdUseCase.execute(new GetInventoryItemByIdCommand(productId));
 
         assertNotNull(result);
-        verify(inventoryRepository).findByProductId(productId);
+        verify(inventoryRepository).findByProductId(ProductId.from_UUID(productId));
         verifyNoMoreInteractions(inventoryRepository);
     }
 
     @Test
     void should_throw_an_exception_when_not_found() {
-        ProductId productId = ProductId.newId();
-        when(inventoryRepository.findByProductId(productId)).thenReturn(Optional.empty());
+        UUID productId = UUID.randomUUID();
+        when(inventoryRepository.findByProductId(ProductId.from_UUID(productId))).thenReturn(Optional.empty());
 
-        assertThrows(InventoryItemNotFoundException.class, () -> getInventoryByIdUseCase.execute(new GetInventoryItemByIdCommand(productId.asString())));
-        verify(inventoryRepository).findByProductId(productId);
+        assertThrows(InventoryItemNotFoundException.class, () -> getInventoryByIdUseCase.execute(new GetInventoryItemByIdCommand(productId)));
+        verify(inventoryRepository).findByProductId(ProductId.from_UUID(productId));
         verifyNoMoreInteractions(inventoryRepository);
     }
 
