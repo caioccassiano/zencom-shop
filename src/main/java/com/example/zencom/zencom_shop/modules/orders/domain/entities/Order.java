@@ -1,7 +1,10 @@
 package com.example.zencom.zencom_shop.modules.orders.domain.entities;
 
 import com.example.zencom.zencom_shop.modules.orders.domain.enums.OrderStatus;
+import com.example.zencom.zencom_shop.modules.orders.domain.events.OrderApprovedDomainEvent;
+import com.example.zencom.zencom_shop.modules.orders.domain.events.OrderCreatedDomainEvent;
 import com.example.zencom.zencom_shop.modules.orders.domain.exceptions.*;
+import com.example.zencom.zencom_shop.modules.shared.domain.AggrgateRoot;
 import com.example.zencom.zencom_shop.modules.shared.ids.OrderId;
 
 import java.math.BigDecimal;
@@ -9,7 +12,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-public final class Order {
+public final class Order extends AggrgateRoot {
     private final OrderId orderId;
     private final UUID userId;
     private OrderStatus status;
@@ -53,14 +56,22 @@ public final class Order {
     //factory method
     public static Order create(UUID userId, List<OrderItem> orderItems) {
         Instant now = Instant.now();
-        return new Order(
-                OrderId.newId(),
+        OrderId orderId = OrderId.newId();
+        Order order = new Order(
+                orderId,
                 userId,
                 orderItems,
                 OrderStatus.PENDING,
                 BigDecimal.ZERO,
                 now,
                 now);
+
+        order.raise(OrderCreatedDomainEvent.now(
+                orderId.getId(),
+                userId
+        ));
+
+        return order;
 
     }
     //Behavior
@@ -86,6 +97,7 @@ public final class Order {
         ensureNotFinalized();
         this.status = OrderStatus.APPROVED;
         touch();
+        raise(OrderApprovedDomainEvent.now(this.orderId.getId()));
     }
 
     public void cancel(){
