@@ -6,13 +6,17 @@ import com.example.zencom.zencom_shop.modules.catalog.application.exceptions.Pro
 import com.example.zencom.zencom_shop.modules.catalog.application.mappers.ProductResultMapper;
 import com.example.zencom.zencom_shop.modules.catalog.application.ports.ProductRepository;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.Product;
+import com.example.zencom.zencom_shop.modules.shared.application.utils.IntegrationEventEmitter;
 
 public class UpdateProductUseCase {
 
     private final ProductRepository productRepository;
+    private final IntegrationEventEmitter integrationEventEmitter;
 
-    public UpdateProductUseCase(ProductRepository productRepository) {
+    public UpdateProductUseCase(ProductRepository productRepository,
+                                IntegrationEventEmitter integrationEventEmitter) {
         this.productRepository = productRepository;
+        this.integrationEventEmitter = integrationEventEmitter;
     }
 
     public ProductResultDTO update(UpdateProductCommand dto) {
@@ -23,6 +27,7 @@ public class UpdateProductUseCase {
                 dto.description(),
                 dto.price());
         productRepository.save(product);
+        integrationEventEmitter.emitFrom(product);
         return ProductResultMapper.toResult(product);
     }
 }

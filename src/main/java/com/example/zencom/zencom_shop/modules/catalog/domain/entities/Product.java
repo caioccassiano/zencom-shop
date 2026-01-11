@@ -2,13 +2,14 @@ package com.example.zencom.zencom_shop.modules.catalog.domain.entities;
 
 import com.example.zencom.zencom_shop.modules.catalog.domain.enums.ProductStatus;
 import com.example.zencom.zencom_shop.modules.catalog.domain.exceptions.InvalidPriceException;
+import com.example.zencom.zencom_shop.modules.shared.domain.AggrgateRoot;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Objects;
 
-public class Product {
+public class Product extends AggrgateRoot {
 
     ProductId id;
     String name;
