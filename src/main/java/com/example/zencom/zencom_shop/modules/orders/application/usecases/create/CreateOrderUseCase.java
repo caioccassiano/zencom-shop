@@ -14,6 +14,7 @@ import com.example.zencom.zencom_shop.modules.orders.application.ports.orders.Or
 import com.example.zencom.zencom_shop.modules.orders.domain.entities.Order;
 import com.example.zencom.zencom_shop.modules.orders.domain.entities.OrderItem;
 import com.example.zencom.zencom_shop.modules.shared.application.events.IntegrationEventPublisher;
+import com.example.zencom.zencom_shop.modules.shared.application.utils.IntegrationEventEmitter;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 
 import java.math.BigDecimal;
@@ -25,21 +26,18 @@ public class CreateOrderUseCase {
     private final OrdersRepository ordersRepository;
     private final InventoryPort inventoryPort;
     private final ProductCatalogPort productCatalogPort;
-    private final IntegrationEventPublisher eventPublisher;
-    private final OrderIntegrationEventMapper eventMapper;
+    private final IntegrationEventEmitter integrationEventEmitter;
 
     public CreateOrderUseCase(
             OrdersRepository ordersRepository,
             InventoryPort inventoryPort,
             ProductCatalogPort productCatalogPort,
-            IntegrationEventPublisher eventPublisher,
-            OrderIntegrationEventMapper eventMapper
+            IntegrationEventEmitter integrationEventEmitter
     ){
         this.ordersRepository = ordersRepository;
         this.inventoryPort = inventoryPort;
         this.productCatalogPort = productCatalogPort;
-        this.eventPublisher = eventPublisher;
-        this.eventMapper = eventMapper;
+        this.integrationEventEmitter = integrationEventEmitter;
     }
 
     public OrderResultDTO execute(CreateOrderCommand command){
@@ -48,7 +46,7 @@ public class CreateOrderUseCase {
 
         Order saved = this.ordersRepository.save(order);
 
-        publishEvents(order); //side effects
+         integrationEventEmitter.emitFrom(order);//side effects
 
         return OrderResultMapper.toDto(saved);
 
@@ -102,19 +100,6 @@ public class CreateOrderUseCase {
         if(discount == null|| discount.equals(BigDecimal.ZERO)) return;
         order.applyDiscount(discount);
     }
-
-    private void publishEvents(Order order){
-        var integrationEvents = order.pullDomainEvents()
-                .stream()
-                .map(eventMapper::toIntegration)
-                .flatMap(Optional::stream)
-                .toList();
-        eventPublisher.publish(integrationEvents);
-    }
-
-
-
-
 
     private void validateCommand(CreateOrderCommand command){
         if (command == null) {

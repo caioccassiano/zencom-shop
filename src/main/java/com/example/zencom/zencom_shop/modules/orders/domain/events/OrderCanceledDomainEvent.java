@@ -1,7 +1,5 @@
 package com.example.zencom.zencom_shop.modules.orders.domain.events;
 
-import com.example.zencom.zencom_shop.modules.shared.contracts.events.OrderCanceledIntegrationEvent;
-import com.example.zencom.zencom_shop.modules.shared.contracts.events.OrderCreatedIntegrationEvent;
 import com.example.zencom.zencom_shop.modules.shared.domain.events.DomainEvent;
 
 import java.time.Instant;

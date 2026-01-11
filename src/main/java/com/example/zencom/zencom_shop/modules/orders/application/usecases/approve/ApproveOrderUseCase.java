@@ -8,6 +8,7 @@ import com.example.zencom.zencom_shop.modules.orders.application.ports.orders.Or
 import com.example.zencom.zencom_shop.modules.orders.domain.entities.Order;
 import com.example.zencom.zencom_shop.modules.orders.domain.entities.OrderItem;
 import com.example.zencom.zencom_shop.modules.shared.application.events.IntegrationEventPublisher;
+import com.example.zencom.zencom_shop.modules.shared.application.utils.IntegrationEventEmitter;
 import com.example.zencom.zencom_shop.modules.shared.ids.OrderId;
 
 import java.util.Optional;
@@ -17,17 +18,14 @@ public class ApproveOrderUseCase {
 
     private final OrdersRepository ordersRepository;
     private final InventoryPort inventoryPort;
-    private final IntegrationEventPublisher eventPublisher;
-    private final OrderIntegrationEventMapper eventMapper;
+    private final IntegrationEventEmitter integrationEventEmitter;
 
     public ApproveOrderUseCase(OrdersRepository ordersRepository,
                                InventoryPort inventoryPort,
-                               IntegrationEventPublisher eventPublisher,
-                               OrderIntegrationEventMapper eventMapper) {
+                               IntegrationEventEmitter integrationEventEmitter) {
         this.ordersRepository = ordersRepository;
         this.inventoryPort = inventoryPort;
-        this.eventPublisher = eventPublisher;
-        this.eventMapper = eventMapper;
+        this.integrationEventEmitter = integrationEventEmitter;
     }
 
     public void execute(ApproveOrderDTO dto) {
@@ -39,22 +37,12 @@ public class ApproveOrderUseCase {
         order.confirm();;
         finalizeInventory(order); //core
         ordersRepository.save(order);
-        publishEvents(order); //side effects
+        integrationEventEmitter.emitFrom(order); //side effects
     }
 
     private void finalizeInventory(Order order) {
         for(OrderItem orderItem : order.getOrderItems()) {
             inventoryPort.commit(orderItem.getProductId(), orderItem.getQuantity());
         }
-    }
-
-    private void publishEvents(Order order) {
-        var integrationEvents = order.pullDomainEvents()
-                .stream()
-                .map(eventMapper::toIntegration)
-                .flatMap(Optional::stream)
-                .toList();
-        eventPublisher.publish(integrationEvents);
-
     }
 }
