@@ -1,4 +1,6 @@
-package com.example.zencom.zencom_shop.modules.shared.contracts.events;
+package com.example.zencom.zencom_shop.modules.shared.contracts.events.orders;
+
+import com.example.zencom.zencom_shop.modules.shared.contracts.events.IntegrationEvent;
 
 import java.time.Instant;
 import java.util.UUID;

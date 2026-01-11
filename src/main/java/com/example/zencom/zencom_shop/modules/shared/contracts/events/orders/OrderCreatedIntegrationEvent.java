@@ -1,4 +1,6 @@
-package com.example.zencom.zencom_shop.modules.shared.contracts.events;
+package com.example.zencom.zencom_shop.modules.shared.contracts.events.orders;
+
+import com.example.zencom.zencom_shop.modules.shared.contracts.events.IntegrationEvent;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -8,7 +10,7 @@ public record OrderCreatedIntegrationEvent(
         Instant occurredAt,
         UUID orderId,
         UUID userId
-) implements IntegrationEvent{
+) implements IntegrationEvent {
 
     @Override
     public String eventType() {
