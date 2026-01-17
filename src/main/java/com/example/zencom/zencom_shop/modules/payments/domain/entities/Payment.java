@@ -3,7 +3,7 @@ package com.example.zencom.zencom_shop.modules.payments.domain.entities;
 import com.example.zencom.zencom_shop.modules.payments.domain.enums.PaymentCurrency;
 import com.example.zencom.zencom_shop.modules.payments.domain.enums.PaymentProvider;
 import com.example.zencom.zencom_shop.modules.payments.domain.enums.PaymentStatus;
-import com.example.zencom.zencom_shop.modules.payments.domain.events.PaymentCreatedDomainEvent;
+import com.example.zencom.zencom_shop.modules.payments.domain.events.*;
 import com.example.zencom.zencom_shop.modules.payments.domain.exceptions.InvalidInputException;
 import com.example.zencom.zencom_shop.modules.payments.domain.exceptions.InvalidPaymentStateException;
 import com.example.zencom.zencom_shop.modules.shared.domain.AggrgateRoot;
@@ -79,7 +79,7 @@ public class Payment extends AggrgateRoot {
     public void capture(){
         ensureStatus(PaymentStatus.AUTHORIZED);
         this.status = PaymentStatus.PAID;
-        //PaymentPaid event soon
+        raise(PaymentPaidDomainEvent.now(this.paymentId.getId()));
         this.touch();
     }
 
@@ -88,6 +88,8 @@ public class Payment extends AggrgateRoot {
             throw new InvalidPaymentStateException("Payment cannot be paid!");
         };
         this.status = PaymentStatus.PAID;
+        raise(PaymentPaidDomainEvent.now(this.paymentId.getId()));
+        this.touch();
     }
 
     public void cancel(String reason) {
@@ -108,7 +110,7 @@ public class Payment extends AggrgateRoot {
 
         this.status = PaymentStatus.CANCELED;
 
-        //PaymentCanceled event soon
+        raise(PaymentCanceledDomainEvent.now(this.paymentId.getId()));
         this.touch();
     }
 
@@ -117,7 +119,7 @@ public class Payment extends AggrgateRoot {
         ensureStatus(PaymentStatus.PENDING);
         this.providerBillingId = Objects.requireNonNull(providerId, "providerId is null");
         this.status = PaymentStatus.AUTHORIZED;
-        //PaymentAuthorized event soon
+        raise(PaymentAuthorizedDomainEvent.now(this.paymentId.getId()));
         this.touch();
     }
 
@@ -140,7 +142,7 @@ public class Payment extends AggrgateRoot {
 
         this.status = PaymentStatus.FAILED;
 
-        //PaymentFailed event soon
+        PaymentFailedDomainEvent.now(this.paymentId.getId());
         this.touch();
     }
 
@@ -151,7 +153,7 @@ public class Payment extends AggrgateRoot {
             throw  new InvalidPaymentStateException("Payment is already refunded");
         }
         this.status = PaymentStatus.REFUNDED;
-        //PaymentRefunded event soon
+        PaymentRefundedDomainEvent.now(this.paymentId.getId());
         this.touch();
     }
 
