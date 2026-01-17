@@ -8,7 +8,7 @@ import com.example.zencom.zencom_shop.modules.shared.domain.events.DomainEvent;
 import java.util.List;
 import java.util.Optional;
 
-public final class IntegrationEventEmitter {
+public class IntegrationEventEmitter {
 
     public interface DomainToIntegrationMapper{
         Optional<IntegrationEvent> toIntegration(DomainEvent domainEvent);
