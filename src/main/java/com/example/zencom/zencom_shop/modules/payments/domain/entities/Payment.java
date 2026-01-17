@@ -3,6 +3,7 @@ package com.example.zencom.zencom_shop.modules.payments.domain.entities;
 import com.example.zencom.zencom_shop.modules.payments.domain.enums.PaymentCurrency;
 import com.example.zencom.zencom_shop.modules.payments.domain.enums.PaymentProvider;
 import com.example.zencom.zencom_shop.modules.payments.domain.enums.PaymentStatus;
+import com.example.zencom.zencom_shop.modules.payments.domain.events.PaymentCreatedDomainEvent;
 import com.example.zencom.zencom_shop.modules.payments.domain.exceptions.InvalidInputException;
 import com.example.zencom.zencom_shop.modules.payments.domain.exceptions.InvalidPaymentStateException;
 import com.example.zencom.zencom_shop.modules.shared.domain.AggrgateRoot;
@@ -21,7 +22,7 @@ public class Payment extends AggrgateRoot {
     private final PaymentProvider provider;
     private final PaymentCurrency currency;
     private BigDecimal amount;
-    private String providerId;
+    private String providerBillingId;
     private Instant createdAt;
     private Instant updatedAt;
 
@@ -32,7 +33,7 @@ public class Payment extends AggrgateRoot {
             PaymentProvider provider,
             PaymentCurrency currency,
             BigDecimal amount,
-            String providerId,
+            String providerBillingId,
             Instant createdAt,
             Instant updatedAt
     ){
@@ -42,7 +43,7 @@ public class Payment extends AggrgateRoot {
         this.provider = Objects.requireNonNull(provider, "provider is null");
         this.currency = Objects.requireNonNull(currency, "currency is null");
         this.amount = Objects.requireNonNull(amount, "amount is null");
-        this.providerId = providerId;
+        this.providerBillingId = providerBillingId;
         this.createdAt = Objects.requireNonNull(createdAt, "createdAt is null");
         this.updatedAt = Objects.requireNonNull(updatedAt, "updatedAt is null");
     }
@@ -54,8 +55,9 @@ public class Payment extends AggrgateRoot {
             PaymentCurrency currency
     ){
         if(amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) throw new InvalidInputException("amount is null or zero or negative");
+        PaymentId paymentId = PaymentId.newId();
         Payment payment = new Payment(
-                PaymentId.newId(),
+                paymentId,
                 orderId,
                 PaymentStatus.PENDING,
                 provider,
@@ -68,6 +70,7 @@ public class Payment extends AggrgateRoot {
 
         );
         // event raising
+        payment.raise(PaymentCreatedDomainEvent.now(paymentId.getId()));
         return payment;
     }
 
@@ -78,6 +81,13 @@ public class Payment extends AggrgateRoot {
         this.status = PaymentStatus.PAID;
         //PaymentPaid event soon
         this.touch();
+    }
+
+    public void markAsPaid(){
+        if(status != PaymentStatus.PENDING && status != PaymentStatus.AUTHORIZED){
+            throw new InvalidPaymentStateException("Payment cannot be paid!");
+        };
+        this.status = PaymentStatus.PAID;
     }
 
     public void cancel(String reason) {
@@ -105,7 +115,7 @@ public class Payment extends AggrgateRoot {
 
     public void authorize(String providerId){
         ensureStatus(PaymentStatus.PENDING);
-        this.providerId = Objects.requireNonNull(providerId, "providerId is null");
+        this.providerBillingId = Objects.requireNonNull(providerId, "providerId is null");
         this.status = PaymentStatus.AUTHORIZED;
         //PaymentAuthorized event soon
         this.touch();
@@ -174,8 +184,8 @@ public class Payment extends AggrgateRoot {
     public boolean isRefunded(){
         return this.status == PaymentStatus.REFUNDED;
     }
-    public boolean hasProviderId(){
-        return this.providerId != null;
+    public boolean hasProviderBillingId(){
+        return this.providerBillingId != null;
     }
 
 
@@ -205,7 +215,7 @@ public class Payment extends AggrgateRoot {
     }
 
     public String getProviderId() {
-        return providerId;
+        return providerBillingId;
     }
 
     public Instant getCreatedAt() {
