@@ -2,6 +2,7 @@ package com.example.zencom.zencom_shop.modules.orders.application.usecases.cance
 
 import com.example.zencom.zencom_shop.modules.orders.application.ports.orders.OrdersRepository;
 import com.example.zencom.zencom_shop.modules.orders.domain.entities.Order;
+import com.example.zencom.zencom_shop.modules.shared.application.utils.IntegrationEventEmitter;
 import com.example.zencom.zencom_shop.modules.shared.ids.OrderId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,13 +17,14 @@ class CancelOrderUseCaseTest {
 
     private CancelOrderUseCase cancelOrderUseCase;
     private OrdersRepository ordersRepository;
+    private IntegrationEventEmitter emitter;
 
     private final UUID orderId = UUID.randomUUID();
 
     @BeforeEach
     void setUp() {
         ordersRepository = mock(OrdersRepository.class);
-        cancelOrderUseCase = new CancelOrderUseCase(ordersRepository);
+        cancelOrderUseCase = new CancelOrderUseCase(ordersRepository, emitter);
     }
 
     @Test

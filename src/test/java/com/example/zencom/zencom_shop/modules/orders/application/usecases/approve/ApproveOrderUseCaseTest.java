@@ -7,6 +7,7 @@ import com.example.zencom.zencom_shop.modules.orders.application.ports.orders.Or
 import com.example.zencom.zencom_shop.modules.orders.domain.entities.Order;
 import com.example.zencom.zencom_shop.modules.orders.domain.entities.OrderItem;
 import com.example.zencom.zencom_shop.modules.orders.domain.enums.OrderStatus;
+import com.example.zencom.zencom_shop.modules.shared.application.utils.IntegrationEventEmitter;
 import com.example.zencom.zencom_shop.modules.shared.ids.OrderId;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,13 +23,15 @@ class ApproveOrderUseCaseTest {
     private ApproveOrderUseCase approveOrderUseCase;
     private OrdersRepository ordersRepository;
     private InventoryPort inventoryPort;
+    private IntegrationEventEmitter emitter;
 
     private final UUID orderId = UUID.randomUUID();
     @BeforeEach
     void setUp() {
         ordersRepository = mock(OrdersRepository.class);
+        emitter = mock(IntegrationEventEmitter.class);
         inventoryPort = mock(InventoryPort.class);
-        approveOrderUseCase = new ApproveOrderUseCase(ordersRepository, inventoryPort);
+        approveOrderUseCase = new ApproveOrderUseCase(ordersRepository, inventoryPort, emitter);
     }
 
     @Test

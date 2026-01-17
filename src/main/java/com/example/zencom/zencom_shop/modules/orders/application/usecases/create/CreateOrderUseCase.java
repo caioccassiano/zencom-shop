@@ -46,7 +46,7 @@ public class CreateOrderUseCase {
 
         Order saved = this.ordersRepository.save(order);
 
-         integrationEventEmitter.emitFrom(order);//side effects
+        integrationEventEmitter.emitFrom(order);//side effects
 
         return OrderResultMapper.toDto(saved);
 

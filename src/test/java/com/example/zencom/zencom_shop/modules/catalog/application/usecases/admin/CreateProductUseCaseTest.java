@@ -5,6 +5,7 @@ import com.example.zencom.zencom_shop.modules.catalog.application.dtos.outputs.P
 import com.example.zencom.zencom_shop.modules.catalog.application.ports.ProductRepository;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.Product;
 import com.example.zencom.zencom_shop.modules.catalog.domain.exceptions.InvalidPriceException;
+import com.example.zencom.zencom_shop.modules.shared.application.utils.IntegrationEventEmitter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -19,11 +20,12 @@ class CreateProductUseCaseTest {
 
     private CreateProductUseCase createProductUseCase;
     private ProductRepository productRepository;
+    private IntegrationEventEmitter emitter;
 
     @BeforeEach
     void setUp() {
         productRepository = mock(ProductRepository.class);
-        createProductUseCase = new CreateProductUseCase(productRepository);
+        createProductUseCase = new CreateProductUseCase(productRepository, emitter);
     }
 
     @Test

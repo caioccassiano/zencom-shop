@@ -11,6 +11,7 @@ import com.example.zencom.zencom_shop.modules.orders.application.ports.inventory
 import com.example.zencom.zencom_shop.modules.orders.application.ports.orders.OrdersRepository;
 import com.example.zencom.zencom_shop.modules.orders.application.usecases.create.CreateOrderUseCase;
 import com.example.zencom.zencom_shop.modules.orders.domain.entities.Order;
+import com.example.zencom.zencom_shop.modules.shared.application.utils.IntegrationEventEmitter;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ class CreateOrderUseCaseTest {
     private InventoryPort inventoryPort;
     private ProductCatalogPort productCatalogPort;
     private OrdersRepository ordersRepository;
+    private IntegrationEventEmitter emitter;
 
     private final UUID userId = UUID.randomUUID();
     private final ProductId productId1 = ProductId.newId();
@@ -38,10 +40,12 @@ class CreateOrderUseCaseTest {
         inventoryPort = mock(InventoryPort.class);
         productCatalogPort = mock(ProductCatalogPort.class);
         ordersRepository = mock(OrdersRepository.class);
+        emitter = mock(IntegrationEventEmitter.class);
         usecase = new CreateOrderUseCase(
                 ordersRepository,
                 inventoryPort,
-                productCatalogPort
+                productCatalogPort,
+                emitter
         );
 
 

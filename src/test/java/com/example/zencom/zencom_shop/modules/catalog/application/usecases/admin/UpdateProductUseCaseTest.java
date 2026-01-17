@@ -5,6 +5,7 @@ import com.example.zencom.zencom_shop.modules.catalog.application.dtos.outputs.P
 import com.example.zencom.zencom_shop.modules.catalog.application.exceptions.ProductDoesNotExistException;
 import com.example.zencom.zencom_shop.modules.catalog.application.ports.ProductRepository;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.Product;
+import com.example.zencom.zencom_shop.modules.shared.application.utils.IntegrationEventEmitter;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,11 +20,12 @@ class UpdateProductUseCaseTest {
 
     private UpdateProductUseCase updateProductUseCase;
     private ProductRepository productRepository;
+    private IntegrationEventEmitter emittrer;
 
     @BeforeEach
     void setUp() {
         productRepository = mock(ProductRepository.class);
-        updateProductUseCase = new UpdateProductUseCase(productRepository);
+        updateProductUseCase = new UpdateProductUseCase(productRepository, emittrer);
     }
 
     @Test
