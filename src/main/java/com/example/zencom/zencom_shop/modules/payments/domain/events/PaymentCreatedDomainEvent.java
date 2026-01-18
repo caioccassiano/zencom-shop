@@ -8,7 +8,9 @@ import java.util.UUID;
 public record PaymentCreatedDomainEvent(
         UUID eventId,
         Instant occurredAt,
-        UUID paymentId
+        UUID paymentId,
+        UUID orderId,
+        String provider
 ) implements DomainEvent {
 
     @Override
@@ -20,10 +22,13 @@ public record PaymentCreatedDomainEvent(
         return paymentId;
     }
 
-    public static PaymentCreatedDomainEvent now(UUID paymentId) {
+    public static PaymentCreatedDomainEvent now(UUID paymentId, UUID orderId, String provider) {
         return new PaymentCreatedDomainEvent(
                 UUID.randomUUID(),
                 Instant.now(),
-                paymentId);
+                paymentId,
+                orderId,
+                provider
+        );
     }
 }

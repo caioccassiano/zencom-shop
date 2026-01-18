@@ -8,7 +8,8 @@ import java.util.UUID;
 public record PaymentFailedDomainEvent(
         UUID eventId,
         Instant occurredAt,
-        UUID paymentId
+        UUID paymentId,
+        String reason
 ) implements DomainEvent {
 
     @Override
@@ -21,11 +22,12 @@ public record PaymentFailedDomainEvent(
         return paymentId;
     }
 
-    public static PaymentFailedDomainEvent now(UUID paymentId){
+    public static PaymentFailedDomainEvent now(UUID paymentId, String reason){
         return new PaymentFailedDomainEvent(
                 UUID.randomUUID(),
                 Instant.now(),
-                paymentId
+                paymentId,
+                reason
         );
     }
 }

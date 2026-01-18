@@ -8,7 +8,8 @@ import java.util.UUID;
 public record PaymentFailedIntegrationEvent(
         UUID eventId,
         Instant occurredAt,
-        UUID aggregateId
+        UUID aggregateId,
+        String reason
 ) implements IntegrationEvent {
 
     @Override
@@ -16,11 +17,12 @@ public record PaymentFailedIntegrationEvent(
         return "PaymentFailedIntegrationEvent";
     }
 
-    public static PaymentFailedIntegrationEvent now(UUID aggregateId) {
+    public static PaymentFailedIntegrationEvent now(UUID aggregateId, String reason) {
         return new PaymentFailedIntegrationEvent(
                 UUID.randomUUID(),
                 Instant.now(),
-                aggregateId
+                aggregateId,
+                reason
         );
     }
 }

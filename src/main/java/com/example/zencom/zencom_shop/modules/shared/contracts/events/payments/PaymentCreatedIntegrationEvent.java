@@ -8,18 +8,23 @@ import java.util.UUID;
 public record PaymentCreatedIntegrationEvent(
         UUID eventId,
         Instant occurredAt,
-        UUID aggregateId
+        UUID aggregateId,
+        UUID orderId,
+        String provider
 ) implements IntegrationEvent {
     @Override
     public String eventType() {
         return "PaymentCreatedIntegrationEvent";
     }
 
-    public static PaymentCreatedIntegrationEvent create(UUID aggregateId) {
+    public static PaymentCreatedIntegrationEvent create(UUID aggregateId, UUID orderId, String provider) {
         return new PaymentCreatedIntegrationEvent(
                 UUID.randomUUID(),
                 Instant.now(),
-                aggregateId);
+                aggregateId,
+                orderId,
+                provider
+                );
     }
 
 

@@ -3,7 +3,8 @@ package com.example.zencom.zencom_shop.modules.payments.domain.enums;
 import com.example.zencom.zencom_shop.modules.payments.domain.exceptions.InvalidInputException;
 
 public enum PaymentProvider {
-    ABACATE_PAY;
+    ABACATEPAY,
+    STRIPE;
 
     public static PaymentProvider from(String value) {
         try {

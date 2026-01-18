@@ -25,7 +25,7 @@ public final class PaymentId {
         return id;
     }
 
-    public PaymentId fromUUID(UUID uuid) {
+    public static PaymentId fromUUID(UUID uuid) {
         return new PaymentId(uuid);
     }
 
