@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.UUID;
 
 public class PaymentTest {
@@ -24,7 +25,7 @@ public class PaymentTest {
     @BeforeEach
     public void setUp() {
         orderId = UUID.randomUUID();
-        paymentProvider = PaymentProvider.ABACATE_PAY;
+        paymentProvider = PaymentProvider.ABACATEPAY;
         paymentCurrency = PaymentCurrency.BRL;
         providerId = UUID.randomUUID().toString();
 
@@ -128,7 +129,7 @@ public class PaymentTest {
                 paymentProvider,
                 paymentCurrency
         );
-        payment.cancel("Has not enough funds");
+        payment.cancel("Has not enough funds", Instant.now());
         assertEquals(PaymentStatus.CANCELED, payment.getStatus());;
     }
 
@@ -143,7 +144,7 @@ public class PaymentTest {
         payment.authorize(providerId);
         payment.capture();
         assertThrows(InvalidPaymentStateException.class, () -> {
-            payment.cancel("Has not enough funds");
+            payment.cancel("Has not enough funds", Instant.now());
         });
     }
 
