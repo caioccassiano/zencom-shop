@@ -1,0 +1,78 @@
+package com.example.zencom.zencom_shop.modules.inventory.application.usecases;
+
+import com.example.zencom.zencom_shop.modules.inventory.application.dtos.input.reservation.CommitReservationCommandDTO;
+import com.example.zencom.zencom_shop.modules.inventory.application.ports.InventoryItemRepository;
+import com.example.zencom.zencom_shop.modules.inventory.application.ports.ReservationRepository;
+import com.example.zencom.zencom_shop.modules.inventory.domain.entities.InventoryItem;
+import com.example.zencom.zencom_shop.modules.inventory.domain.entities.Reservation;
+import com.example.zencom.zencom_shop.modules.inventory.domain.enums.ReservationStatus;
+import com.example.zencom.zencom_shop.modules.inventory.domain.vo.ReservationItem;
+import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
+
+import java.util.*;
+
+public class CommitReservationUseCase {
+    private final ReservationRepository reservationRepository;
+    private final InventoryItemRepository inventoryItemRepository;
+
+    public CommitReservationUseCase(ReservationRepository reservationRepository, InventoryItemRepository itemRepository) {
+        this.reservationRepository = reservationRepository;
+        this.inventoryItemRepository = itemRepository;
+    }
+
+    public void execute(CommitReservationCommandDTO command) {
+        if(command==null) throw new IllegalArgumentException("input cannot be null");
+        Reservation reservation = reservationRepository.findById(command.reservationId())
+                .orElseThrow(() -> new IllegalArgumentException("reservation not found"));
+        if(validateIdempotence(reservation)) return;
+        List<InventoryItem> inventoryItems = getInventoryItems(reservation);
+        Map<UUID, InventoryItem> inventoryByProduct = indexInventory(inventoryItems);
+        commitStock(inventoryByProduct, reservation.items());
+        reservation.markAsCommitted();
+        reservationRepository.save(reservation);
+        inventoryItemRepository.saveAll(inventoryItems);
+
+
+
+
+    }
+    private boolean validateIdempotence(Reservation reservation) {
+        if(reservation.status()== ReservationStatus.COMMITTED) return true;
+
+        if(reservation.status()==ReservationStatus.RELEASED) throw new IllegalArgumentException("reservation is already released");
+        return false;
+
+    }
+
+    private List<InventoryItem> getInventoryItems(Reservation reservation) {
+        List<UUID> productsIds = new ArrayList<>();
+
+        for(ReservationItem item : reservation.items()){
+            productsIds.add(item.productId());
+        }
+        return inventoryItemRepository.findProductsByIds(productsIds);
+    }
+
+    private Map<UUID,InventoryItem> indexInventory(List<InventoryItem> inventoryItems) {
+        Map<UUID,InventoryItem> inventory = new HashMap<>();
+        for(InventoryItem item : inventoryItems){
+            UUID productId = item.getProductId().getId();
+            inventory.put(productId, item);
+        }
+        return inventory;
+    }
+
+    private void commitStock(Map<UUID, InventoryItem> inventoryByProduct, List<ReservationItem> items) {
+        for (ReservationItem item : items){
+            int quantity = item.quantity();
+
+            InventoryItem inventory = inventoryByProduct.get(item.productId());
+            if(inventory==null){
+                throw new IllegalArgumentException("inventory not found");
+            }
+            inventory.commit(quantity);
+        }
+
+    }
+
+}
