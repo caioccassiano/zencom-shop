@@ -4,39 +4,24 @@ import com.example.zencom.zencom_shop.modules.orders.application.dtos.input.Crea
 import com.example.zencom.zencom_shop.modules.orders.application.dtos.input.CreateOrderItemDTO;
 import com.example.zencom.zencom_shop.modules.orders.application.dtos.output.OrderResultDTO;
 import com.example.zencom.zencom_shop.modules.orders.application.exception.InvalidOrderCommandException;
-import com.example.zencom.zencom_shop.modules.orders.application.exception.ProductHasNotEnoughStockException;
-import com.example.zencom.zencom_shop.modules.orders.application.exception.ProductNotFoundException;
-import com.example.zencom.zencom_shop.modules.orders.application.mappers.OrderIntegrationEventMapper;
 import com.example.zencom.zencom_shop.modules.orders.application.mappers.OrderResultMapper;
-import com.example.zencom.zencom_shop.modules.orders.application.ports.catalog.ProductCatalogPort;
-import com.example.zencom.zencom_shop.modules.orders.application.ports.inventory.InventoryPort;
 import com.example.zencom.zencom_shop.modules.orders.application.ports.orders.OrdersRepository;
 import com.example.zencom.zencom_shop.modules.orders.domain.entities.Order;
 import com.example.zencom.zencom_shop.modules.orders.domain.entities.OrderItem;
-import com.example.zencom.zencom_shop.modules.shared.application.events.IntegrationEventPublisher;
 import com.example.zencom.zencom_shop.modules.shared.application.utils.IntegrationEventEmitter;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-
 public class CreateOrderUseCase {
 
     private final OrdersRepository ordersRepository;
-    private final InventoryPort inventoryPort;
-    private final ProductCatalogPort productCatalogPort;
     private final IntegrationEventEmitter integrationEventEmitter;
 
     public CreateOrderUseCase(
             OrdersRepository ordersRepository,
-            InventoryPort inventoryPort,
-            ProductCatalogPort productCatalogPort,
             IntegrationEventEmitter integrationEventEmitter
     ){
         this.ordersRepository = ordersRepository;
-        this.inventoryPort = inventoryPort;
-        this.productCatalogPort = productCatalogPort;
         this.integrationEventEmitter = integrationEventEmitter;
     }
 
@@ -55,51 +40,33 @@ public class CreateOrderUseCase {
     }
 
     private Order createOrder(CreateOrderCommand command) {
-        List<OrderItem> items = buildOrderItems(command);
-        Order order = Order.create(command.userId(), items);
-        applyDiscountIfNeeded(order, command.discount());
-        return order;
-    }
+        if (command == null) throw new IllegalStateException("command is required");
 
-
-    private List<OrderItem> buildOrderItems(CreateOrderCommand command) {
-        return command.items().stream()
-                .map(this::processItem)
-                .toList();
-    }
-
-    private OrderItem processItem(CreateOrderItemDTO dto) {
-        ProductId productId = ProductId.from(dto.productId());
-
-        ProductCatalogPort.ProductSnapshot product = findActiveProduct(productId);
-        ensureHasAvailableStock(productId, dto.quantity());
-        inventoryPort.reserve(productId, dto.quantity());
-        return OrderItem.create(
-                product.productId(),
-                product.name(),
-                product.price(),
-                dto.quantity()
-        );
+        return Order.create(
+                command.userId(),
+                command.items().stream()
+                        .map(this::toOrderItem).toList(),
+                command.reservationId());
 
     }
 
+    private OrderItem toOrderItem(CreateOrderItemDTO dto) {
+        if(dto==null)throw new IllegalArgumentException("dto is required");
+        if(dto.productId()==null)throw new IllegalArgumentException("productId is required");
+
+        ProductId productId = ProductId.from_UUID(dto.productId());
+        int quantity = dto.quantity();
+        BigDecimal unitPrice = dto.unitPrice();
+        String productName = dto.productName();
 
 
-    private ProductCatalogPort.ProductSnapshot findActiveProduct(ProductId productId) {
-        return productCatalogPort.findActiveById(productId)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+        if(quantity<=0)throw new IllegalArgumentException("quantity must be greater than 0");
+        if(unitPrice==null)throw new IllegalArgumentException("unitPrice is required");
+        if(unitPrice.compareTo(BigDecimal.ZERO)<=0)throw new IllegalArgumentException("unitPrice must be greater than zero");
+
+        return OrderItem.create(productId,productName,unitPrice,quantity);
     }
 
-    private void ensureHasAvailableStock(ProductId productId, int quantity) {
-        if(!inventoryPort.hasAvailable(productId, quantity)){
-            throw new ProductHasNotEnoughStockException("Product has not enough stock");
-        }
-    }
-
-    private void applyDiscountIfNeeded(Order order, BigDecimal discount) {
-        if(discount == null|| discount.equals(BigDecimal.ZERO)) return;
-        order.applyDiscount(discount);
-    }
 
     private void validateCommand(CreateOrderCommand command){
         if (command == null) {
@@ -111,6 +78,11 @@ public class CreateOrderUseCase {
         if (command.items() == null || command.items().isEmpty()) {
             throw new InvalidOrderCommandException("items cannot be empty");
         }
+
+        if (command.reservationId() == null) {
+            throw new InvalidOrderCommandException("reservationId cannot be null");
+        }
+
         for (CreateOrderItemDTO item : command.items()) {
             if (item == null) throw new InvalidOrderCommandException("item cannot be null");
             if (item.productId() == null) {
@@ -121,7 +93,5 @@ public class CreateOrderUseCase {
             }
         }
     }
-
-
 
 }

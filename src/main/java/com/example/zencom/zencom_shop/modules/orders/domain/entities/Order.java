@@ -17,6 +17,7 @@ public final class Order extends AggrgateRoot {
     private final UUID userId;
     private OrderStatus status;
     private final List<OrderItem> orderItems;
+    private UUID reservationId;
     private BigDecimal subtotal;
     private BigDecimal discountTotal;
     private BigDecimal total;
@@ -27,6 +28,7 @@ public final class Order extends AggrgateRoot {
             OrderId orderId,
             UUID userId,
             List<OrderItem> orderItems,
+            UUID reservationId,
             OrderStatus status,
             BigDecimal discountTotal,
             Instant createdAt,
@@ -39,11 +41,13 @@ public final class Order extends AggrgateRoot {
         if(orderItems == null || orderItems.isEmpty()) throw new OrderItemsCannotBeNullException();
         if(status == null) throw new StatusCannotBeNullException();
         if(createdAt == null) throw new IllegalArgumentException("createdAt cannot be null");
+        if(reservationId==null) throw new IllegalArgumentException("reservationId cannot be null");
 
 
         this.orderId = orderId;
         this.userId = userId;
         this.orderItems = orderItems;
+        this.reservationId = reservationId;
         this.status = status;
         this.discountTotal = discountTotal == null ? BigDecimal.ZERO : discountTotal;
         this.createdAt = createdAt;
@@ -54,13 +58,14 @@ public final class Order extends AggrgateRoot {
     }
 
     //factory method
-    public static Order create(UUID userId, List<OrderItem> orderItems) {
+    public static Order create(UUID userId, List<OrderItem> orderItems, UUID reservationId) {
         Instant now = Instant.now();
         OrderId orderId = OrderId.newId();
         Order order = new Order(
                 orderId,
                 userId,
                 orderItems,
+                reservationId,
                 OrderStatus.PENDING,
                 BigDecimal.ZERO,
                 now,
@@ -156,6 +161,8 @@ public final class Order extends AggrgateRoot {
     public Instant getUpdatedAt() {
         return updatedAt;
     }
+
+    public UUID getReservationId() {return reservationId;}
 }
 
 

@@ -1,7 +1,7 @@
 package com.example.zencom.zencom_shop.modules.inventory.application.usecases;
 
 import com.example.zencom.zencom_shop.modules.inventory.application.dtos.output.InventoryItemResultDTO;
-import com.example.zencom.zencom_shop.modules.inventory.application.ports.InventoryRepository;
+import com.example.zencom.zencom_shop.modules.inventory.application.ports.InventoryItemRepository;
 import com.example.zencom.zencom_shop.modules.inventory.domain.entities.InventoryItem;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,12 +16,12 @@ import static org.mockito.Mockito.when;
 class ListAvailableInventoryItemsUseCaseTest {
 
     private ListAvailableInventoryItemsUseCase listAvailableInventoryItemsUseCase;
-    private InventoryRepository inventoryRepository;
+    private InventoryItemRepository inventoryItemRepository;
 
     @BeforeEach
     void setUp() {
-        inventoryRepository = mock(InventoryRepository.class);
-        listAvailableInventoryItemsUseCase = new ListAvailableInventoryItemsUseCase(inventoryRepository);
+        inventoryItemRepository = mock(InventoryItemRepository.class);
+        listAvailableInventoryItemsUseCase = new ListAvailableInventoryItemsUseCase(inventoryItemRepository);
     }
 
     @Test
@@ -35,7 +35,7 @@ class ListAvailableInventoryItemsUseCaseTest {
         inventoryItem1.addStock(12);
         inventoryItem2.addStock(12);
 
-        when(inventoryRepository.findAllWithAvailableQuantity())
+        when(inventoryItemRepository.findAllWithAvailableQuantity())
                 .thenReturn(List.of(inventoryItem1, inventoryItem2));
 
         List<InventoryItemResultDTO> result = listAvailableInventoryItemsUseCase.findAllAvailableItems();
@@ -54,7 +54,7 @@ class ListAvailableInventoryItemsUseCaseTest {
         InventoryItem inventoryItem1 = InventoryItem.create(productId1);
         InventoryItem inventoryItem2 = InventoryItem.create(productId2);
 
-        when(inventoryRepository.findAllWithAvailableQuantity()).thenReturn(List.of(inventoryItem1, inventoryItem2));
+        when(inventoryItemRepository.findAllWithAvailableQuantity()).thenReturn(List.of(inventoryItem1, inventoryItem2));
 
         List<InventoryItemResultDTO> result = listAvailableInventoryItemsUseCase.findAllAvailableItems();
 

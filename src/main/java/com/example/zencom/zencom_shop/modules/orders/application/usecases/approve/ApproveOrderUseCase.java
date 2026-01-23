@@ -7,6 +7,7 @@ import com.example.zencom.zencom_shop.modules.orders.application.ports.inventory
 import com.example.zencom.zencom_shop.modules.orders.application.ports.orders.OrdersRepository;
 import com.example.zencom.zencom_shop.modules.orders.domain.entities.Order;
 import com.example.zencom.zencom_shop.modules.orders.domain.entities.OrderItem;
+import com.example.zencom.zencom_shop.modules.orders.domain.enums.OrderStatus;
 import com.example.zencom.zencom_shop.modules.shared.application.events.IntegrationEventPublisher;
 import com.example.zencom.zencom_shop.modules.shared.application.utils.IntegrationEventEmitter;
 import com.example.zencom.zencom_shop.modules.shared.ids.OrderId;
@@ -29,13 +30,11 @@ public class ApproveOrderUseCase {
     }
 
     public void execute(ApproveOrderDTO dto) {
-        OrderId orderId = OrderId.from_UUID(dto.orderId());
-        Order order = ordersRepository.findById(orderId)
-                        .orElseThrow(()->
-                                new OrderNotFoundException("Order with id " + orderId + " not found")
-                        );
-        order.confirm();;
-        finalizeInventory(order); //core
+        validateDto(dto);
+        Order order = loadOrder(dto);
+        if(order.getStatus() == OrderStatus.APPROVED) return;
+        order.confirm();//core
+        finalizeInventory(order);//side effects
         ordersRepository.save(order);
         integrationEventEmitter.emitFrom(order); //side effects
     }
@@ -44,5 +43,20 @@ public class ApproveOrderUseCase {
         for(OrderItem orderItem : order.getOrderItems()) {
             inventoryPort.commit(orderItem.getProductId(), orderItem.getQuantity());
         }
+    }
+
+    private Order loadOrder(ApproveOrderDTO dto) {
+        OrderId orderId = OrderId.from_UUID(dto.orderId());
+        return this.ordersRepository.findById(orderId)
+                .orElseThrow(()->
+                        new OrderNotFoundException("Order with id " + orderId + " not found")
+                );
+
+
+    }
+
+    private void validateDto(ApproveOrderDTO dto) {
+        if(dto==null) throw new IllegalArgumentException("dto can't be null");
+        if(dto.orderId()==null) throw new IllegalArgumentException("orderId can't be null");
     }
 }

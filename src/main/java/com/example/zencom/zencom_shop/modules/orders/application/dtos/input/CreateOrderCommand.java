@@ -7,6 +7,7 @@ import java.util.UUID;
 public record CreateOrderCommand(
         UUID userId,
         List<CreateOrderItemDTO> items,
-        BigDecimal discount
+        BigDecimal totalAmount,
+        UUID reservationId
 ) {
 }
