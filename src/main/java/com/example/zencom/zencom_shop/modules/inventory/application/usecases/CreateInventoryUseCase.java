@@ -1,16 +1,16 @@
 package com.example.zencom.zencom_shop.modules.inventory.application.usecases;
 
 import com.example.zencom.zencom_shop.modules.inventory.application.dtos.input.CreateInventoryItemCommand;
-import com.example.zencom.zencom_shop.modules.inventory.application.ports.InventoryRepository;
+import com.example.zencom.zencom_shop.modules.inventory.application.ports.InventoryItemRepository;
 import com.example.zencom.zencom_shop.modules.inventory.domain.entities.InventoryItem;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 
 public class CreateInventoryUseCase {
 
-    private final InventoryRepository inventoryRepository;
+    private final InventoryItemRepository inventoryItemRepository;
 
-    public CreateInventoryUseCase(InventoryRepository inventoryRepository) {
-        this.inventoryRepository = inventoryRepository;
+    public CreateInventoryUseCase(InventoryItemRepository inventoryItemRepository) {
+        this.inventoryItemRepository = inventoryItemRepository;
     }
 
     public void execute(CreateInventoryItemCommand command){
@@ -18,10 +18,10 @@ public class CreateInventoryUseCase {
             throw new IllegalArgumentException("CreateInventoryItemCommand argument is null");
         }
         ProductId productId = ProductId.from_UUID(command.productId());
-        if(inventoryRepository.existsByProductId(productId)){
+        if(inventoryItemRepository.existsByProductId(productId)){
             return;
         }
         InventoryItem inventoryItem = InventoryItem.create(productId);
-        inventoryRepository.save(inventoryItem);
+        inventoryItemRepository.save(inventoryItem);
     }
 }

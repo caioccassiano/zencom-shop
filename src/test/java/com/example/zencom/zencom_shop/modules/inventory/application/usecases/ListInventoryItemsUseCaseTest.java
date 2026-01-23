@@ -1,8 +1,7 @@
 package com.example.zencom.zencom_shop.modules.inventory.application.usecases;
 
-import com.example.zencom.zencom_shop.modules.catalog.domain.entities.Product;
 import com.example.zencom.zencom_shop.modules.inventory.application.dtos.output.InventoryItemResultDTO;
-import com.example.zencom.zencom_shop.modules.inventory.application.ports.InventoryRepository;
+import com.example.zencom.zencom_shop.modules.inventory.application.ports.InventoryItemRepository;
 import com.example.zencom.zencom_shop.modules.inventory.domain.entities.InventoryItem;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,12 +14,12 @@ import static org.mockito.Mockito.*;
 
 class ListInventoryItemsUseCaseTest {
     ListInventoryItemsUseCase listInventoryItemsUseCase;
-    InventoryRepository inventoryRepository;
+    InventoryItemRepository inventoryItemRepository;
 
     @BeforeEach
     void setUp() {
-        inventoryRepository = mock(InventoryRepository.class);
-        listInventoryItemsUseCase = new ListInventoryItemsUseCase(inventoryRepository);
+        inventoryItemRepository = mock(InventoryItemRepository.class);
+        listInventoryItemsUseCase = new ListInventoryItemsUseCase(inventoryItemRepository);
     }
 
     @Test
@@ -32,7 +31,7 @@ class ListInventoryItemsUseCaseTest {
         InventoryItem item1 = mock(InventoryItem.class);
         InventoryItem item2 = mock(InventoryItem.class);
 
-        when(inventoryRepository.findAll()).thenReturn(List.of(item1, item2));
+        when(inventoryItemRepository.findAll()).thenReturn(List.of(item1, item2));
 
         when(item1.getProductId()).thenReturn(productId1);
         when(item1.getAvailableQuantity()).thenReturn(10);
@@ -52,7 +51,7 @@ class ListInventoryItemsUseCaseTest {
         assertEquals(item2.getProductId().toString(), result.get(1).productId());
         assertEquals(5, result.get(1).availableQuantity());
         assertEquals(1, result.get(1).reservedQuantity());
-        verify(inventoryRepository).findAll();
-        verifyNoMoreInteractions(inventoryRepository);
+        verify(inventoryItemRepository).findAll();
+        verifyNoMoreInteractions(inventoryItemRepository);
     }
 }

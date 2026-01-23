@@ -2,24 +2,24 @@ package com.example.zencom.zencom_shop.modules.inventory.application.usecases.st
 
 import com.example.zencom.zencom_shop.modules.inventory.application.dtos.input.ReserveStockCommandDTO;
 import com.example.zencom.zencom_shop.modules.inventory.application.exceptions.InventoryItemNotFoundException;
-import com.example.zencom.zencom_shop.modules.inventory.application.ports.InventoryRepository;
+import com.example.zencom.zencom_shop.modules.inventory.application.ports.InventoryItemRepository;
 import com.example.zencom.zencom_shop.modules.inventory.domain.entities.InventoryItem;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 
 public class ReserveStockUseCase {
 
-    private final InventoryRepository inventoryRepository;
+    private final InventoryItemRepository inventoryItemRepository;
 
-    public ReserveStockUseCase(InventoryRepository inventoryRepository) {
-        this.inventoryRepository = inventoryRepository;
+    public ReserveStockUseCase(InventoryItemRepository inventoryItemRepository) {
+        this.inventoryItemRepository = inventoryItemRepository;
     }
 
     public void execute(ReserveStockCommandDTO command){
         ProductId productId = ProductId.from_UUID(command.productId());
-        InventoryItem item = this.inventoryRepository.findByProductId(productId)
+        InventoryItem item = this.inventoryItemRepository.findByProductId(productId)
                 .orElseThrow(InventoryItemNotFoundException::new);
         item.reserveStock(command.quantity());
-        this.inventoryRepository.save(item);
+        this.inventoryItemRepository.save(item);
 
     }
 }

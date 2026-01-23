@@ -2,7 +2,7 @@ package com.example.zencom.zencom_shop.modules.inventory.application.usecases.st
 
 import com.example.zencom.zencom_shop.modules.inventory.application.dtos.input.ReserveStockCommandDTO;
 import com.example.zencom.zencom_shop.modules.inventory.application.exceptions.InventoryItemNotFoundException;
-import com.example.zencom.zencom_shop.modules.inventory.application.ports.InventoryRepository;
+import com.example.zencom.zencom_shop.modules.inventory.application.ports.InventoryItemRepository;
 import com.example.zencom.zencom_shop.modules.inventory.domain.entities.InventoryItem;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,12 +16,12 @@ import static org.mockito.Mockito.*;
 
 class ReserveStockUseCaseTest {
     private ReserveStockUseCase reserveStockUseCase;
-    private InventoryRepository inventoryRepository;
+    private InventoryItemRepository inventoryItemRepository;
 
     @BeforeEach
     void setUp() {
-        inventoryRepository = mock(InventoryRepository.class);
-        reserveStockUseCase = new ReserveStockUseCase(inventoryRepository);
+        inventoryItemRepository = mock(InventoryItemRepository.class);
+        reserveStockUseCase = new ReserveStockUseCase(inventoryItemRepository);
     }
 
     @Test
@@ -30,12 +30,12 @@ class ReserveStockUseCaseTest {
         int quantity = 3;
         InventoryItem inventoryItem = InventoryItem.create(ProductId.from_UUID(productId));
 
-        when(this.inventoryRepository.findByProductId(ProductId.from_UUID(productId))).thenReturn(Optional.of(inventoryItem));
+        when(this.inventoryItemRepository.findByProductId(ProductId.from_UUID(productId))).thenReturn(Optional.of(inventoryItem));
 
         reserveStockUseCase.execute(new ReserveStockCommandDTO(productId, quantity));
 
-        verify(inventoryRepository).findByProductId(ProductId.from_UUID(productId));
-        verify(inventoryRepository).save(inventoryItem);
+        verify(inventoryItemRepository).findByProductId(ProductId.from_UUID(productId));
+        verify(inventoryItemRepository).save(inventoryItem);
         assertEquals(3, inventoryItem.getReservedQuantity());
 
     }
@@ -43,12 +43,12 @@ class ReserveStockUseCaseTest {
     @Test
     void should_throw_exception_when_item_is_not_found() {
         UUID productId = UUID.randomUUID();
-        when(this.inventoryRepository.findByProductId(ProductId.from_UUID(productId))).thenReturn(Optional.empty());
+        when(this.inventoryItemRepository.findByProductId(ProductId.from_UUID(productId))).thenReturn(Optional.empty());
 
         assertThrows(InventoryItemNotFoundException.class,
                 () -> reserveStockUseCase.execute(
                         new ReserveStockCommandDTO(productId, 0)));
-        verify(inventoryRepository).findByProductId(ProductId.from_UUID(productId));
-        verifyNoMoreInteractions(inventoryRepository);
+        verify(inventoryItemRepository).findByProductId(ProductId.from_UUID(productId));
+        verifyNoMoreInteractions(inventoryItemRepository);
     }
 }

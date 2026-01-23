@@ -4,20 +4,20 @@ import com.example.zencom.zencom_shop.modules.inventory.application.dtos.input.G
 import com.example.zencom.zencom_shop.modules.inventory.application.dtos.output.InventoryItemResultDTO;
 import com.example.zencom.zencom_shop.modules.inventory.application.exceptions.InventoryItemNotFoundException;
 import com.example.zencom.zencom_shop.modules.inventory.application.mappers.InventoryItemResultMapper;
-import com.example.zencom.zencom_shop.modules.inventory.application.ports.InventoryRepository;
+import com.example.zencom.zencom_shop.modules.inventory.application.ports.InventoryItemRepository;
 import com.example.zencom.zencom_shop.modules.inventory.domain.entities.InventoryItem;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 
 public class GetInventoryByIdUseCase {
-    private final InventoryRepository inventoryRepository;
+    private final InventoryItemRepository inventoryItemRepository;
 
-    public GetInventoryByIdUseCase(InventoryRepository inventoryRepository) {
-        this.inventoryRepository = inventoryRepository;
+    public GetInventoryByIdUseCase(InventoryItemRepository inventoryItemRepository) {
+        this.inventoryItemRepository = inventoryItemRepository;
     }
 
     public InventoryItemResultDTO execute(GetInventoryItemByIdCommand command) {
         ProductId productId = ProductId.from_UUID(command.productId());
-        InventoryItem item = this.inventoryRepository.findByProductId(productId)
+        InventoryItem item = this.inventoryItemRepository.findByProductId(productId)
                 .orElseThrow(InventoryItemNotFoundException::new);
         return InventoryItemResultMapper.toDTO(item);
     }
