@@ -11,9 +11,9 @@ public final class PaymentResultMapper {
                 payment.getPaymentId().getId(),
                 payment.getOrderId(),
                 payment.getAmount(),
-                payment.getCurrency().name(),
-                payment.getProvider().name(),
-                payment.getStatus().name()
+                payment.getCurrency(),
+                payment.getProvider(),
+                payment.getStatus()
         );
     }
 }
