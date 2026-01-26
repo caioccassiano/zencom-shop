@@ -1,0 +1,7 @@
+package com.example.zencom.zencom_shop.modules.notification.domain.enums;
+
+public enum NotificationStatus {
+    PENDING,
+    SENT,
+    FAILED
+}
