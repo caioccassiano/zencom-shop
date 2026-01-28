@@ -1,0 +1,85 @@
+package com.example.zencom.zencom_shop.modules.users.application.usecases;
+
+import com.example.zencom.zencom_shop.modules.users.application.dtos.input.RegisterUserCommandDTO;
+import com.example.zencom.zencom_shop.modules.users.application.dtos.output.UserResultDTO;
+import com.example.zencom.zencom_shop.modules.users.application.exception.EmailAlreadyInUseException;
+import com.example.zencom.zencom_shop.modules.users.application.ports.PasswordHasher;
+import com.example.zencom.zencom_shop.modules.users.application.ports.UserRepository;
+import com.example.zencom.zencom_shop.modules.users.domain.entities.User;
+import com.example.zencom.zencom_shop.modules.users.domain.enums.NotificationChannel;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+class RegisterUserUseCaseTest {
+    private RegisterUserUseCase registerUserUseCase;
+    private UserRepository userRepository;
+    private PasswordHasher  passwordHasher;
+
+    String email = "caio@gmail.com";
+
+    @BeforeEach
+    void setUp() {
+        userRepository = mock(UserRepository.class);
+        passwordHasher = mock(PasswordHasher.class);
+        registerUserUseCase = new RegisterUserUseCase(
+                userRepository,
+                passwordHasher
+        );
+    }
+
+    @Test
+    void should_register_user() {
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+        when(passwordHasher.hashPassword("Caio123")).thenReturn("hashed_caio123");
+        UserResultDTO result = registerUserUseCase.execute(
+                new RegisterUserCommandDTO(
+                        email,
+                        "Caio123",
+                        null,
+                        null
+                )
+        );
+        assertNotNull(result);
+        assertEquals("caio@gmail.com", result.email());
+        verify(userRepository, times(1)).findByEmail(email);
+        verify(passwordHasher, times(1)).hashPassword("Caio123");
+        verify(userRepository,times(1)).save(any(User.class));
+
+
+
+
+    }
+
+    @Test
+    void should_not_register_user_if_email_already_exists() {
+        User user = mock(User.class);
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        assertThrows(EmailAlreadyInUseException.class, () -> registerUserUseCase.execute(
+                new RegisterUserCommandDTO(
+                        email,
+                        "caio123",
+                        null,
+                        null
+    )
+        ));
+    }
+
+    @Test
+    void should_not_register_user_if_password_is_null() {
+        assertThrows(RuntimeException.class, () -> registerUserUseCase.execute(
+                new RegisterUserCommandDTO(
+                        email,
+                        null,
+                        null,
+                        null
+                )
+        ));
+    }
+}
+
