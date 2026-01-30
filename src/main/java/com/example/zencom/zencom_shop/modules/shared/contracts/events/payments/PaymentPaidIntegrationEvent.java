@@ -1,26 +1,50 @@
 package com.example.zencom.zencom_shop.modules.shared.contracts.events.payments;
 
+import com.example.zencom.zencom_shop.modules.shared.contracts.events.EventMetadata;
 import com.example.zencom.zencom_shop.modules.shared.contracts.events.IntegrationEvent;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
 public record PaymentPaidIntegrationEvent(
-        UUID eventId,
-        Instant occurredAt,
-        UUID aggregateId
-) implements IntegrationEvent {
+        EventMetadata metadata,
+        PaymentPaidPayload payload
 
-    @Override
-    public String eventType(){
-        return "PaymentPaidIntegrationEvent";
-    }
+) implements IntegrationEvent<PaymentPaidIntegrationEvent.PaymentPaidPayload> {
 
-    public static PaymentPaidIntegrationEvent now(UUID aggregateId) {
+    public final static String TYPE = "payments.payment_paid.v1";
+
+    public record PaymentPaidPayload(
+            UUID paymentId,
+            UUID orderId,
+            BigDecimal amount,
+            String provider,
+            String currency,
+            Instant paidAt
+    ){}
+
+    public static PaymentPaidIntegrationEvent now(
+            UUID eventId,
+            Instant occurredAt,
+            UUID correlationId,
+            UUID paymentId,
+            UUID orderId,
+            BigDecimal amount,
+            String provider,
+            String currency,
+            Instant paidAt
+    ){
         return new PaymentPaidIntegrationEvent(
-                UUID.randomUUID(),
-                Instant.now(),
-                aggregateId
+                new EventMetadata(eventId,occurredAt, TYPE, correlationId ),
+                new PaymentPaidPayload(
+                        paymentId,
+                        orderId,
+                        amount,
+                        provider,
+                        currency,
+                        paidAt
+                )
         );
     }
 }

@@ -1,28 +1,47 @@
 package com.example.zencom.zencom_shop.modules.shared.contracts.events.orders;
 
+import com.example.zencom.zencom_shop.modules.shared.contracts.events.EventMetadata;
 import com.example.zencom.zencom_shop.modules.shared.contracts.events.IntegrationEvent;
 
+import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 public record OrderCreatedIntegrationEvent(
-        UUID eventId,
-        Instant occurredAt,
-        UUID orderId,
-        UUID userId
-) implements IntegrationEvent {
+       EventMetadata metadata,
+       Payload payload
+) implements IntegrationEvent<OrderCreatedIntegrationEvent.Payload> {
 
-    @Override
-    public String eventType() {
-        return "OrderCreatedIntegrationEvent";
-    }
+    public static final String TYPE = "orders.order_created.v1";
 
-    public static OrderCreatedIntegrationEvent now(UUID orderId, UUID userId) {
+    public record Payload(
+            UUID orderId,
+            UUID userId,
+            UUID reservationId,
+            BigDecimal totalAmount,
+            List<Item> items
+    ){}
+
+    public record Item(
+            UUID productId,
+            int quantity
+    ){}
+
+    public static OrderCreatedIntegrationEvent now(
+            UUID eventId,
+            Instant occurredAt,
+            UUID correlationId,
+            UUID orderId,
+            UUID userId,
+            UUID reservationId,
+            BigDecimal totalAmount,
+            List<Item> items
+    ){
         return new OrderCreatedIntegrationEvent(
-                UUID.randomUUID(),
-                Instant.now(),
-                orderId,
-                userId
+                new EventMetadata(eventId, occurredAt,TYPE, correlationId),
+                new Payload(orderId, userId, reservationId, totalAmount, items)
         );
     }
+
 }

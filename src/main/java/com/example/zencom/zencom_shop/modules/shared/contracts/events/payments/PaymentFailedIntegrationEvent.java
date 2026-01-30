@@ -1,28 +1,38 @@
 package com.example.zencom.zencom_shop.modules.shared.contracts.events.payments;
 
+import com.example.zencom.zencom_shop.modules.shared.contracts.events.EventMetadata;
 import com.example.zencom.zencom_shop.modules.shared.contracts.events.IntegrationEvent;
 
 import java.time.Instant;
 import java.util.UUID;
 
 public record PaymentFailedIntegrationEvent(
-        UUID eventId,
-        Instant occurredAt,
-        UUID aggregateId,
-        String reason
-) implements IntegrationEvent {
+      EventMetadata metadata,
+      PaymentFailedPayload payload
 
-    @Override
-    public String eventType() {
-        return "PaymentFailedIntegrationEvent";
-    }
+) implements IntegrationEvent<PaymentFailedIntegrationEvent.PaymentFailedPayload> {
 
-    public static PaymentFailedIntegrationEvent now(UUID aggregateId, String reason) {
+    public final static String TYPE = "payments.payment_failed.v1";
+
+    public record PaymentFailedPayload(
+            UUID paymentId,
+            UUID orderId,
+            String reason,
+            Instant failedAt
+    ){}
+
+    public static PaymentFailedIntegrationEvent now(
+            UUID eventId,
+            Instant occurredAt,
+            UUID correlationId,
+            UUID paymentId,
+            UUID orderId,
+            String reason,
+            Instant failedAt
+    ){
         return new PaymentFailedIntegrationEvent(
-                UUID.randomUUID(),
-                Instant.now(),
-                aggregateId,
-                reason
+                new EventMetadata(eventId, occurredAt, TYPE, correlationId),
+                new PaymentFailedPayload(paymentId,orderId, reason, failedAt)
         );
     }
 }

@@ -6,7 +6,7 @@ import com.example.zencom.zencom_shop.modules.payments.domain.enums.PaymentStatu
 import com.example.zencom.zencom_shop.modules.payments.domain.events.*;
 import com.example.zencom.zencom_shop.modules.payments.domain.exceptions.InvalidInputException;
 import com.example.zencom.zencom_shop.modules.payments.domain.exceptions.InvalidPaymentStateException;
-import com.example.zencom.zencom_shop.modules.shared.domain.AggrgateRoot;
+import com.example.zencom.zencom_shop.modules.shared.domain.AggregateRoot;
 import com.example.zencom.zencom_shop.modules.shared.ids.PaymentId;
 
 import java.math.BigDecimal;
@@ -14,7 +14,7 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Payment extends AggrgateRoot {
+public class Payment extends AggregateRoot {
     private final PaymentId paymentId;
     private final UUID orderId;
     private PaymentStatus status;
@@ -96,8 +96,7 @@ public class Payment extends AggrgateRoot {
         // event raising
         payment.raise(PaymentCreatedDomainEvent.now(
                 paymentId.getId(),
-                payment.orderId,
-                payment.provider.toString()
+                payment.orderId
                 ));
         return payment;
     }

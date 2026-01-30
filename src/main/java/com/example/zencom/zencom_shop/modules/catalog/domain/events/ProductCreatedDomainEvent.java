@@ -1,6 +1,5 @@
 package com.example.zencom.zencom_shop.modules.catalog.domain.events;
 
-import com.example.zencom.zencom_shop.modules.catalog.domain.entities.Product;
 import com.example.zencom.zencom_shop.modules.shared.domain.events.DomainEvent;
 
 import java.time.Instant;

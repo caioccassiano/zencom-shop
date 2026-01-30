@@ -9,26 +9,26 @@ public record PaymentCreatedDomainEvent(
         UUID eventId,
         Instant occurredAt,
         UUID paymentId,
-        UUID orderId,
-        String provider
+        UUID orderId
 ) implements DomainEvent {
+
+    public static final String TYPE = "payments.payment_created";
 
     @Override
     public String eventType() {
-        return "PaymentCreated";
+        return TYPE;
     }
 
     @Override public UUID aggregateId() {
         return paymentId;
     }
 
-    public static PaymentCreatedDomainEvent now(UUID paymentId, UUID orderId, String provider) {
+    public static PaymentCreatedDomainEvent now(UUID paymentId, UUID orderId) {
         return new PaymentCreatedDomainEvent(
                 UUID.randomUUID(),
                 Instant.now(),
                 paymentId,
-                orderId,
-                provider
+                orderId
         );
     }
 }
