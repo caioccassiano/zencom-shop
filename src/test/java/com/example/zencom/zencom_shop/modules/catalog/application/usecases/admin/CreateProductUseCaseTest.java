@@ -1,9 +1,10 @@
 package com.example.zencom.zencom_shop.modules.catalog.application.usecases.admin;
 
-import com.example.zencom.zencom_shop.modules.catalog.application.dtos.inputs.CreateProductCommand;
-import com.example.zencom.zencom_shop.modules.catalog.application.dtos.outputs.ProductResultDTO;
-import com.example.zencom.zencom_shop.modules.catalog.application.ports.ProductRepository;
-import com.example.zencom.zencom_shop.modules.catalog.domain.entities.Product;
+import com.example.zencom.zencom_shop.modules.catalog.application.dtos.product.inputs.CreateProductCommand;
+import com.example.zencom.zencom_shop.modules.catalog.application.dtos.product.outputs.ProductResultDTO;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.product.ProductRepository;
+import com.example.zencom.zencom_shop.modules.catalog.application.usecases.product.admin.CreateProductUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.domain.entities.product.Product;
 import com.example.zencom.zencom_shop.modules.catalog.domain.exceptions.InvalidPriceException;
 import com.example.zencom.zencom_shop.modules.shared.application.utils.IntegrationEventEmitter;
 import org.junit.jupiter.api.BeforeEach;

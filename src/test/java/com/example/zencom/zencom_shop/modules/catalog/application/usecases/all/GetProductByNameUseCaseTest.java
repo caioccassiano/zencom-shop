@@ -1,9 +1,10 @@
 package com.example.zencom.zencom_shop.modules.catalog.application.usecases.all;
 
-import com.example.zencom.zencom_shop.modules.catalog.application.dtos.outputs.ProductResultDTO;
+import com.example.zencom.zencom_shop.modules.catalog.application.dtos.product.outputs.ProductResultDTO;
 import com.example.zencom.zencom_shop.modules.catalog.application.exceptions.ProductDoesNotExistException;
-import com.example.zencom.zencom_shop.modules.catalog.application.ports.ProductRepository;
-import com.example.zencom.zencom_shop.modules.catalog.domain.entities.Product;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.product.ProductRepository;
+import com.example.zencom.zencom_shop.modules.catalog.application.usecases.product.all.GetProductByNameUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.domain.entities.product.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

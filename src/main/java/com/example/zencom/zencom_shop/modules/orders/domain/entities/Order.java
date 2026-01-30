@@ -4,7 +4,7 @@ import com.example.zencom.zencom_shop.modules.orders.domain.enums.OrderStatus;
 import com.example.zencom.zencom_shop.modules.orders.domain.events.OrderApprovedDomainEvent;
 import com.example.zencom.zencom_shop.modules.orders.domain.events.OrderCreatedDomainEvent;
 import com.example.zencom.zencom_shop.modules.orders.domain.exceptions.*;
-import com.example.zencom.zencom_shop.modules.shared.domain.AggrgateRoot;
+import com.example.zencom.zencom_shop.modules.shared.domain.AggregateRoot;
 import com.example.zencom.zencom_shop.modules.shared.ids.OrderId;
 
 import java.math.BigDecimal;
@@ -12,7 +12,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-public final class Order extends AggrgateRoot {
+public final class Order extends AggregateRoot {
     private final OrderId orderId;
     private final UUID userId;
     private OrderStatus status;
@@ -163,6 +163,8 @@ public final class Order extends AggrgateRoot {
     }
 
     public UUID getReservationId() {return reservationId;}
+
+
 }
 
 

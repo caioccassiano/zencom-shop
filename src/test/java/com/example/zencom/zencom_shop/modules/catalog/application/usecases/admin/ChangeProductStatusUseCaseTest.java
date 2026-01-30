@@ -1,9 +1,10 @@
 package com.example.zencom.zencom_shop.modules.catalog.application.usecases.admin;
 
-import com.example.zencom.zencom_shop.modules.catalog.application.dtos.inputs.ChangeProductStatusCommand;
+import com.example.zencom.zencom_shop.modules.catalog.application.dtos.product.inputs.ChangeProductStatusCommand;
 import com.example.zencom.zencom_shop.modules.catalog.application.exceptions.ProductDoesNotExistException;
-import com.example.zencom.zencom_shop.modules.catalog.application.ports.ProductRepository;
-import com.example.zencom.zencom_shop.modules.catalog.domain.entities.Product;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.product.ProductRepository;
+import com.example.zencom.zencom_shop.modules.catalog.application.usecases.product.admin.ChangeProductStatusUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.domain.entities.product.Product;
 import com.example.zencom.zencom_shop.modules.catalog.domain.enums.ProductStatus;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 import org.junit.jupiter.api.BeforeEach;

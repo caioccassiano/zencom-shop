@@ -1,12 +1,13 @@
 package com.example.zencom.zencom_shop.modules.inventory.application.usecases;
 
-import com.example.zencom.zencom_shop.modules.inventory.application.dtos.input.reservation.CancelReservationCommandDTO;
-import com.example.zencom.zencom_shop.modules.inventory.application.ports.InventoryItemRepository;
-import com.example.zencom.zencom_shop.modules.inventory.application.ports.ReservationRepository;
-import com.example.zencom.zencom_shop.modules.inventory.domain.entities.InventoryItem;
-import com.example.zencom.zencom_shop.modules.inventory.domain.entities.Reservation;
-import com.example.zencom.zencom_shop.modules.inventory.domain.enums.ReservationStatus;
-import com.example.zencom.zencom_shop.modules.inventory.domain.vo.ReservationItem;
+import com.example.zencom.zencom_shop.modules.catalog.application.dtos.inventory.input.reservation.CancelReservationCommandDTO;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.inventory.InventoryItemRepository;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.inventory.ReservationRepository;
+import com.example.zencom.zencom_shop.modules.catalog.application.usecases.inventory.CancelReservationUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.InventoryItem;
+import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.Reservation;
+import com.example.zencom.zencom_shop.modules.catalog.domain.enums.ReservationStatus;
+import com.example.zencom.zencom_shop.modules.catalog.domain.vo.ReservationItem;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

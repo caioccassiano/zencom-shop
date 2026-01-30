@@ -1,0 +1,33 @@
+package com.example.zencom.zencom_shop.modules.catalog.application.usecases.product.admin;
+
+import com.example.zencom.zencom_shop.modules.catalog.application.dtos.product.inputs.UpdateProductCommand;
+import com.example.zencom.zencom_shop.modules.catalog.application.dtos.product.outputs.ProductResultDTO;
+import com.example.zencom.zencom_shop.modules.catalog.application.exceptions.ProductDoesNotExistException;
+import com.example.zencom.zencom_shop.modules.catalog.application.mappers.ProductResultMapper;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.product.ProductRepository;
+import com.example.zencom.zencom_shop.modules.catalog.domain.entities.product.Product;
+import com.example.zencom.zencom_shop.modules.shared.application.utils.IntegrationEventEmitter;
+
+public class UpdateProductUseCase {
+
+    private final ProductRepository productRepository;
+    private final IntegrationEventEmitter integrationEventEmitter;
+
+    public UpdateProductUseCase(ProductRepository productRepository,
+                                IntegrationEventEmitter integrationEventEmitter) {
+        this.productRepository = productRepository;
+        this.integrationEventEmitter = integrationEventEmitter;
+    }
+
+    public ProductResultDTO update(UpdateProductCommand dto) {
+        Product product = productRepository.findById(dto.id())
+                .orElseThrow(ProductDoesNotExistException::new);
+        product.update(
+                dto.name(),
+                dto.description(),
+                dto.price());
+        productRepository.save(product);
+        integrationEventEmitter.emitFrom(product);
+        return ProductResultMapper.toResult(product);
+    }
+}

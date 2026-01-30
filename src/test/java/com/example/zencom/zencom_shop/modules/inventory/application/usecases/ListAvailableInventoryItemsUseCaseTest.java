@@ -1,8 +1,9 @@
 package com.example.zencom.zencom_shop.modules.inventory.application.usecases;
 
-import com.example.zencom.zencom_shop.modules.inventory.application.dtos.output.InventoryItemResultDTO;
-import com.example.zencom.zencom_shop.modules.inventory.application.ports.InventoryItemRepository;
-import com.example.zencom.zencom_shop.modules.inventory.domain.entities.InventoryItem;
+import com.example.zencom.zencom_shop.modules.catalog.application.dtos.inventory.output.InventoryItemResultDTO;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.inventory.InventoryItemRepository;
+import com.example.zencom.zencom_shop.modules.catalog.application.usecases.inventory.ListAvailableInventoryItemsUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.InventoryItem;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,5 @@
 package com.example.zencom.zencom_shop.modules.checkout.application.mappers;
 
-import com.example.zencom.zencom_shop.modules.catalog.domain.entities.Product;
 import com.example.zencom.zencom_shop.modules.checkout.application.snapshots.cart.CartItemSnapshot;
 import com.example.zencom.zencom_shop.modules.checkout.application.snapshots.cart.CartSnapshot;
 import com.example.zencom.zencom_shop.modules.checkout.application.snapshots.catalog.ProductSnapshot;
