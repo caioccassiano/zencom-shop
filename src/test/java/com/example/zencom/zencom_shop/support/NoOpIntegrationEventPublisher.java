@@ -10,7 +10,7 @@ public class NoOpIntegrationEventPublisher implements IntegrationEventPublisher 
 
 
     @Override
-    public void publish(List<IntegrationEvent> events) {
+    public void publish(List<IntegrationEvent<?>> events) {
 
     }
 
