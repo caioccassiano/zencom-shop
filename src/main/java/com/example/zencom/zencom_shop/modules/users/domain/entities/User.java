@@ -1,13 +1,15 @@
 package com.example.zencom.zencom_shop.modules.users.domain.entities;
 
+import com.example.zencom.zencom_shop.modules.shared.domain.AggregateRoot;
 import com.example.zencom.zencom_shop.modules.shared.ids.UserId;
 import com.example.zencom.zencom_shop.modules.shared.security.Role;
 import com.example.zencom.zencom_shop.modules.users.domain.enums.NotificationChannel;
+import com.example.zencom.zencom_shop.modules.users.domain.events.UserCreatedDomainEvent;
 
 import java.time.Instant;
 import java.util.Set;
 
-public class User {
+public class User extends AggregateRoot {
 
     private final UserId id;
     private String email;
@@ -52,7 +54,7 @@ public class User {
             NotificationChannel channel,
             String phoneNumber
     ){
-        return new User(
+        User user = new User(
                 UserId.newId(),
                 email,
                 password,
@@ -62,6 +64,13 @@ public class User {
                 Instant.now(),
                 null
         );
+        user.raise(UserCreatedDomainEvent.now(
+                user.getId().getId()
+        ));
+
+        return user;
+
+
     }
 
     private void touch(){
