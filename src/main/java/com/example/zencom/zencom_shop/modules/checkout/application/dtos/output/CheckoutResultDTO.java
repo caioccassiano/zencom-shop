@@ -11,6 +11,7 @@ public record CheckoutResultDTO(
         UUID paymentId,
         UUID reservationId,
         BigDecimal totalAmount,
-        PaymentStatus status
+        PaymentStatus status,
+        String requestId
 ) {
 }

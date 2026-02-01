@@ -7,6 +7,7 @@ public record CreatePaymentCommandDTO(
         UUID orderId,
         BigDecimal amount,
         String provider,
+        String requestId,
         String currency
 ) {
 }

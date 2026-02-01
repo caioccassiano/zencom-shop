@@ -13,6 +13,7 @@ public record PaymentResultDTO(
         BigDecimal amount,
         PaymentCurrency currency,
         PaymentProvider provider,
+        String requestId,
         PaymentStatus status
 ) {
 }

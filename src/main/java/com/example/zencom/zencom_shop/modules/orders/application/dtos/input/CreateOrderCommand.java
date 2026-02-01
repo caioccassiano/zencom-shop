@@ -8,6 +8,7 @@ public record CreateOrderCommand(
         UUID userId,
         List<CreateOrderItemDTO> items,
         BigDecimal totalAmount,
-        UUID reservationId
+        UUID reservationId,
+        String requestId
 ) {
 }

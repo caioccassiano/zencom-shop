@@ -1,6 +1,5 @@
 package com.example.zencom.zencom_shop.modules.orders.application.usecases.approve;
 
-import com.example.zencom.zencom_shop.modules.catalog.domain.entities.Product;
 import com.example.zencom.zencom_shop.modules.orders.application.dtos.input.ApproveOrderDTO;
 import com.example.zencom.zencom_shop.modules.orders.application.ports.inventory.InventoryPort;
 import com.example.zencom.zencom_shop.modules.orders.application.ports.orders.OrdersRepository;

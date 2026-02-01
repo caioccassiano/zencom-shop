@@ -23,6 +23,7 @@ public class CancelPaymentUseCase {
                 .orElseThrow(() -> new PaymentNotFound(command.providerReferenceId()));
         payment.cancel(command.reason(), command.canceledAt());
         paymentRepository.save(payment);
-        emitter.emitFrom(payment);
+        UUID requestId = UUID.fromString(payment.getRequestId());
+        emitter.emitFrom(payment, requestId);
     }
 }

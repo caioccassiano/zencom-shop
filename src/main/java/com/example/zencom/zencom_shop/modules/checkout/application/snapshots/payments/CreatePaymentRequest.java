@@ -9,6 +9,7 @@ public record CreatePaymentRequest(
         UUID orderId,
         UUID costumerId,
         BigDecimal amount,
-        PaymentMethod method
+        PaymentMethod method,
+        String requestId
 ) {
 }

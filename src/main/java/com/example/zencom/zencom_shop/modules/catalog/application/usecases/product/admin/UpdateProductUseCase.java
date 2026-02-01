@@ -11,12 +11,10 @@ import com.example.zencom.zencom_shop.modules.shared.application.utils.Integrati
 public class UpdateProductUseCase {
 
     private final ProductRepository productRepository;
-    private final IntegrationEventEmitter integrationEventEmitter;
 
     public UpdateProductUseCase(ProductRepository productRepository,
                                 IntegrationEventEmitter integrationEventEmitter) {
         this.productRepository = productRepository;
-        this.integrationEventEmitter = integrationEventEmitter;
     }
 
     public ProductResultDTO update(UpdateProductCommand dto) {
@@ -27,7 +25,6 @@ public class UpdateProductUseCase {
                 dto.description(),
                 dto.price());
         productRepository.save(product);
-        integrationEventEmitter.emitFrom(product);
         return ProductResultMapper.toResult(product);
     }
 }

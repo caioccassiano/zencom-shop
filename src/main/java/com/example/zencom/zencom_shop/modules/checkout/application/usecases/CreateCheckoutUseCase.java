@@ -53,14 +53,16 @@ public class CreateCheckoutUseCase {
             order = createOrder(
                     cart,
                     pricing,
-                    reservation
+                    reservation,
+                    command.requestId()
             );
             PaymentCreatedSnapshot payment = createdPayment(command,cart,pricing,order);
             return buildResult(
                     pricing,
                     reservation,
                     order,
-                    payment
+                    payment,
+                    command.requestId()
 
             );
         } catch (RuntimeException ex){
@@ -111,7 +113,7 @@ public class CreateCheckoutUseCase {
 
     private InventoryReservationSnapshot reserveInventory(CreateCheckoutCommandDTO command, CartSnapshot cart){
         ReservationRequest request = new ReservationRequest(
-                command.idempotencyKey(),
+                command.requestId(),
                 command.costumerId(),
                 cart.items().stream()
                         .map(cartItem -> new ReservationItem(
@@ -130,13 +132,16 @@ public class CreateCheckoutUseCase {
     private OrderCreatedSnapshot createOrder(
             CartSnapshot cart,
             Pricing pricing,
-            InventoryReservationSnapshot reservation
+            InventoryReservationSnapshot reservation,
+            String requestId
     ){
         CreateOrderRequest request = new CreateOrderRequest(
                 cart.costumerId(),
                 pricing.toOrderItems(),
                 reservation.reservationId(),
-                pricing.totalAmount()
+                pricing.totalAmount(),
+                requestId
+
         );
         OrderCreatedSnapshot order = ordersPort.createOrder(request);
         if(order==null || order.orderId()==null) throw new IllegalArgumentException("order is required");
@@ -151,7 +156,8 @@ public class CreateCheckoutUseCase {
                 order.orderId(),
                 cart.costumerId(),
                 pricing.totalAmount(),
-                command.method()
+                command.method(),
+                command.requestId()
         );
         PaymentCreatedSnapshot payment = paymentPort.createPayment(request);
         if(payment==null || payment.paymentId()==null) throw new IllegalArgumentException("payment is required");
@@ -162,14 +168,16 @@ public class CreateCheckoutUseCase {
             Pricing pricing,
             InventoryReservationSnapshot reservation,
             OrderCreatedSnapshot order,
-            PaymentCreatedSnapshot payment
+            PaymentCreatedSnapshot payment,
+            String requestId
     ){
         return new CheckoutResultDTO(
                 order.orderId(),
                 payment.paymentId(),
                 reservation.reservationId(),
                 pricing.totalAmount(),
-                payment.status()
+                payment.status(),
+                requestId
         );
     }
 

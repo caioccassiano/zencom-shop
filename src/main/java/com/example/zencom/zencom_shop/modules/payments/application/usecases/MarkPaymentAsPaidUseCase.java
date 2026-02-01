@@ -26,6 +26,7 @@ public class MarkPaymentAsPaidUseCase {
                 .orElseThrow(() -> new PaymentNotFound(command.providerPaymentId()));
         payment.markAsPaid(command.paidAt());
         paymentRepository.save(payment);
-        emitter.emitFrom(payment);
+        UUID requestId = UUID.fromString(payment.getRequestId());
+        emitter.emitFrom(payment, requestId);
     }
 }

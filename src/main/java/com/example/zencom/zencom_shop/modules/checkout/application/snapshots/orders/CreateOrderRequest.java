@@ -8,6 +8,7 @@ public record CreateOrderRequest(
         UUID costumerId,
         List<CreateOrderItem> items,
         UUID reservationId,
-        BigDecimal totalAmount
+        BigDecimal totalAmount,
+        String requestId
 ) {
 }

@@ -22,6 +22,7 @@ public class Payment extends AggregateRoot {
     private final PaymentCurrency currency;
     private BigDecimal amount;
     private String providerPaymentId;
+    private final String requestId;
     private Instant createdAt;
     private Instant updatedAt;
     private Instant paidAt;
@@ -39,6 +40,7 @@ public class Payment extends AggregateRoot {
             PaymentCurrency currency,
             BigDecimal amount,
             String providerPaymentId,
+            String requestId,
             Instant createdAt,
             Instant updatedAt,
             Instant paidAt,
@@ -56,6 +58,7 @@ public class Payment extends AggregateRoot {
         this.currency = Objects.requireNonNull(currency, "currency is null");
         this.amount = Objects.requireNonNull(amount, "amount is null");
         this.providerPaymentId = providerPaymentId;
+        this.requestId = Objects.requireNonNull(requestId, "requestId is null");
         this.createdAt = Objects.requireNonNull(createdAt, "createdAt is null");
         this.updatedAt = Objects.requireNonNull(updatedAt, "updatedAt is null");
         this.paidAt = paidAt;
@@ -70,7 +73,8 @@ public class Payment extends AggregateRoot {
             UUID orderId,
             BigDecimal amount,
             PaymentProvider provider,
-            PaymentCurrency currency
+            PaymentCurrency currency,
+            String requestId
     ){
         if(amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) throw new InvalidInputException("amount is null or zero or negative");
         PaymentId paymentId = PaymentId.newId();
@@ -82,6 +86,7 @@ public class Payment extends AggregateRoot {
                 currency,
                 amount,
                 null,
+                requestId,
                 Instant.now(),
                 Instant.now(),
                 null,
@@ -292,5 +297,9 @@ public class Payment extends AggregateRoot {
 
     public String getFailedReason() {
         return failedReason;
+    }
+
+    public String getRequestId() {
+        return requestId;
     }
 }

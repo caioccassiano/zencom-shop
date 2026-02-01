@@ -12,6 +12,9 @@ import com.example.zencom.zencom_shop.modules.shared.application.utils.Integrati
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 
 import java.math.BigDecimal;
+import java.util.Optional;
+import java.util.UUID;
+
 public class CreateOrderUseCase {
 
     private final OrdersRepository ordersRepository;
@@ -27,11 +30,15 @@ public class CreateOrderUseCase {
 
     public OrderResultDTO execute(CreateOrderCommand command){
         validateCommand(command);
+        var existingOrder = ordersRepository.findByRequestId(command.requestId());
+        if (existingOrder.isPresent()) {
+            return OrderResultMapper.toDto(existingOrder.get());
+        }
         Order order = createOrder(command);
 
         Order saved = this.ordersRepository.save(order);
-
-        integrationEventEmitter.emitFrom(order);//side effects
+        UUID requestId = UUID.fromString(command.requestId());
+        integrationEventEmitter.emitFrom(order, requestId);//side effects
 
         return OrderResultMapper.toDto(saved);
 
@@ -46,7 +53,8 @@ public class CreateOrderUseCase {
                 command.userId(),
                 command.items().stream()
                         .map(this::toOrderItem).toList(),
-                command.reservationId());
+                command.reservationId(),
+                command.requestId());
 
     }
 
@@ -81,6 +89,10 @@ public class CreateOrderUseCase {
 
         if (command.reservationId() == null) {
             throw new InvalidOrderCommandException("reservationId cannot be null");
+        }
+
+        if (command.requestId() == null) {
+            throw new InvalidOrderCommandException("requestId cannot be null");
         }
 
         for (CreateOrderItemDTO item : command.items()) {

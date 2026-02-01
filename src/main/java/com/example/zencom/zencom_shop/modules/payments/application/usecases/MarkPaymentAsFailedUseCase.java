@@ -6,6 +6,8 @@ import com.example.zencom.zencom_shop.modules.payments.application.ports.Payment
 import com.example.zencom.zencom_shop.modules.payments.domain.entities.Payment;
 import com.example.zencom.zencom_shop.modules.shared.application.utils.IntegrationEventEmitter;
 
+import java.util.UUID;
+
 
 public class MarkPaymentAsFailedUseCase {
     private PaymentRepository paymentRepository;
@@ -23,7 +25,8 @@ public class MarkPaymentAsFailedUseCase {
                 .orElseThrow(() -> new PaymentNotFound(command.providerReferenceId()));
         payment.fail(command.reason(), command.failedAt());
         paymentRepository.save(payment);
-        emitter.emitFrom(payment);
+        UUID requestId = UUID.fromString(payment.getRequestId());
+        emitter.emitFrom(payment, requestId);
     }
 
 }

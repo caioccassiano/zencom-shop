@@ -7,6 +7,8 @@ import com.example.zencom.zencom_shop.modules.payments.domain.entities.Payment;
 import com.example.zencom.zencom_shop.modules.shared.application.utils.IntegrationEventEmitter;
 import com.example.zencom.zencom_shop.modules.shared.ids.PaymentId;
 
+import java.util.UUID;
+
 public class AuthorizePaymentUseCase {
 
     private final PaymentRepository paymentRepository;
@@ -25,6 +27,7 @@ public class AuthorizePaymentUseCase {
                 .orElseThrow(() -> new PaymentNotFound(command.providerPaymentId()));
         payment.authorize(command.providerPaymentId());
         paymentRepository.save(payment);
-        emmitter.emitFrom(payment);
+        UUID requestId =  UUID.fromString(payment.getRequestId());
+        emmitter.emitFrom(payment, requestId);
     }
 }

@@ -18,6 +18,7 @@ public final class Order extends AggregateRoot {
     private OrderStatus status;
     private final List<OrderItem> orderItems;
     private UUID reservationId;
+    private final String requestId;
     private BigDecimal subtotal;
     private BigDecimal discountTotal;
     private BigDecimal total;
@@ -29,6 +30,7 @@ public final class Order extends AggregateRoot {
             UUID userId,
             List<OrderItem> orderItems,
             UUID reservationId,
+            String requestId,
             OrderStatus status,
             BigDecimal discountTotal,
             Instant createdAt,
@@ -42,12 +44,14 @@ public final class Order extends AggregateRoot {
         if(status == null) throw new StatusCannotBeNullException();
         if(createdAt == null) throw new IllegalArgumentException("createdAt cannot be null");
         if(reservationId==null) throw new IllegalArgumentException("reservationId cannot be null");
+        if(requestId==null) throw new IllegalArgumentException("requestId cannot be null");
 
 
         this.orderId = orderId;
         this.userId = userId;
         this.orderItems = orderItems;
         this.reservationId = reservationId;
+        this.requestId = requestId;
         this.status = status;
         this.discountTotal = discountTotal == null ? BigDecimal.ZERO : discountTotal;
         this.createdAt = createdAt;
@@ -58,7 +62,7 @@ public final class Order extends AggregateRoot {
     }
 
     //factory method
-    public static Order create(UUID userId, List<OrderItem> orderItems, UUID reservationId) {
+    public static Order create(UUID userId, List<OrderItem> orderItems, UUID reservationId, String requestId) {
         Instant now = Instant.now();
         OrderId orderId = OrderId.newId();
         Order order = new Order(
@@ -66,6 +70,7 @@ public final class Order extends AggregateRoot {
                 userId,
                 orderItems,
                 reservationId,
+                requestId,
                 OrderStatus.PENDING,
                 BigDecimal.ZERO,
                 now,
@@ -163,6 +168,8 @@ public final class Order extends AggregateRoot {
     }
 
     public UUID getReservationId() {return reservationId;}
+
+    public String getRequestId() {return requestId;}
 
 
 }

@@ -10,6 +10,8 @@ import com.example.zencom.zencom_shop.modules.payments.domain.enums.PaymentProvi
 import com.example.zencom.zencom_shop.modules.payments.domain.exceptions.InvalidInputException;
 import com.example.zencom.zencom_shop.modules.shared.application.utils.IntegrationEventEmitter;
 
+import java.util.UUID;
+
 public class CreatePaymentUseCase {
 
     private final PaymentRepository paymentRepository;
@@ -30,10 +32,12 @@ public class CreatePaymentUseCase {
                 command.orderId(),
                 command.amount(),
                 provider,
-                currency
+                currency,
+                command.requestId()
         );
         paymentRepository.save(payment);
-        emitter.emitFrom(payment); //side effects
+        UUID requestId = UUID.fromString(payment.getRequestId());
+        emitter.emitFrom(payment, requestId); //side effects
         return PaymentResultMapper.toDto(payment);
 
     }
@@ -41,5 +45,6 @@ public class CreatePaymentUseCase {
     private void  validateCommand(CreatePaymentCommandDTO command) {
         if (command.amount()==null || command.amount().signum()<=0) throw new InvalidInputException("Amount must be greater than zero");
         if(command.orderId()==null) throw new InvalidInputException("Order ID cannot be null");
+        if ((command.requestId()== null)) throw new InvalidInputException("Request ID cannot be null");
     }
 }

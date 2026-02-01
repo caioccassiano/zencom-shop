@@ -16,5 +16,7 @@ public interface OrdersRepository {
 
     List<Order> findByUserId(UUID userId);
 
+    Optional<Order> findByRequestId(String requestId);
+
 
 }
