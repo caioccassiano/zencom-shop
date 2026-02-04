@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: bitnami/postgresql:latest
+    container_name: zencom-postgres
+    environment:
+      - POSTGRESQL_DATABASE=zencom
+      - POSTGRESQL_USERNAME=zencom
+      - POSTGRESQL_PASSWORD=zencom
+    ports:
+      - "5435:5432"
+    volumes:
+      - zencom_pgdata:/bitnami/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zencom -d zencom"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  zencom_pgdata:
