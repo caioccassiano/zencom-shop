@@ -5,6 +5,7 @@ import com.example.zencom.zencom_shop.modules.shared.ids.UserId;
 import com.example.zencom.zencom_shop.modules.shared.security.Role;
 import com.example.zencom.zencom_shop.modules.users.domain.enums.NotificationChannel;
 import com.example.zencom.zencom_shop.modules.users.domain.events.UserCreatedDomainEvent;
+import jakarta.persistence.Id;
 
 import java.time.Instant;
 import java.util.Set;
@@ -69,8 +70,28 @@ public class User extends AggregateRoot {
         ));
 
         return user;
+    }
 
-
+    public static User restore(
+            UserId id,
+            String email,
+            String passwordHash,
+            Set<Role> role,
+            NotificationChannel channel,
+            String phoneNumber,
+            Instant createdAt,
+            Instant updatedAt
+    ){
+        return new User(
+                id,
+                email,
+                passwordHash,
+                role,
+                channel,
+                phoneNumber,
+                createdAt,
+                updatedAt
+        );
     }
 
     private void touch(){
