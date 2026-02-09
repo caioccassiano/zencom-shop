@@ -3,9 +3,9 @@ package com.example.zencom.zencom_shop.modules.users.application.usecases;
 import com.example.zencom.zencom_shop.modules.users.application.dtos.input.LoginUserCommandDTO;
 import com.example.zencom.zencom_shop.modules.users.application.dtos.output.UserAuthenticatedDTO;
 import com.example.zencom.zencom_shop.modules.users.application.exception.InvalidCredentials;
-import com.example.zencom.zencom_shop.modules.users.application.ports.PasswordHasher;
-import com.example.zencom.zencom_shop.modules.users.application.ports.TokenService;
-import com.example.zencom.zencom_shop.modules.users.application.ports.UserRepository;
+import com.example.zencom.zencom_shop.modules.users.application.ports.out.PasswordHasher;
+import com.example.zencom.zencom_shop.modules.users.application.ports.out.TokenService;
+import com.example.zencom.zencom_shop.modules.users.application.ports.out.UserRepository;
 import com.example.zencom.zencom_shop.modules.users.domain.entities.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class LoginUserUseCaseTest {
-    private LoginUserUseCase loginUserUseCase;
+    private LoginUserUseCaseImpl loginUserUseCaseImpl;
     private UserRepository userRepository;
     private PasswordHasher passwordHasher;
     private TokenService tokenService;
@@ -27,7 +27,7 @@ class LoginUserUseCaseTest {
         passwordHasher = mock(PasswordHasher.class);
         tokenService = mock(TokenService.class);
 
-        loginUserUseCase = new LoginUserUseCase(
+        loginUserUseCaseImpl = new LoginUserUseCaseImpl(
                 userRepository,
                 tokenService,
                 passwordHasher
@@ -46,7 +46,7 @@ class LoginUserUseCaseTest {
                         .validatePassword(anyString(), anyString());
         when(tokenService.generateToken(user)).thenReturn("token");
 
-        UserAuthenticatedDTO result = loginUserUseCase.execute(
+        UserAuthenticatedDTO result = loginUserUseCaseImpl.execute(
                 new LoginUserCommandDTO(email, password)
         );
         assertNotNull(result);
@@ -65,7 +65,7 @@ class LoginUserUseCaseTest {
         doThrow(new InvalidCredentials("Invalid email or password"))
                 .when(passwordHasher).validatePassword(anyString(), anyString());
         LoginUserCommandDTO command = new LoginUserCommandDTO(email, password);
-        assertThrows(InvalidCredentials.class, () -> loginUserUseCase.execute(command));
+        assertThrows(InvalidCredentials.class, () -> loginUserUseCaseImpl.execute(command));
         verify(userRepository).findByEmail(email);
     }
 

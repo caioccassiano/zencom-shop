@@ -16,12 +16,12 @@ public class PaymentCreatedIntegrationEventHandler {
     }
 
     public void handle(PaymentCreatedIntegrationEvent event) {
-        Payment payment = paymentRepository.findByPaymentId(event.aggregateId())
+        Payment payment = paymentRepository.findByPaymentId(event.payload().paymentId())
                 .orElseThrow(() -> new IllegalStateException("Payment not found"));
 
         if(payment.hasProviderPaymentId()) return;
 
-        var gateway = gatewayResolver.resolve(event.provider());
+        var gateway = gatewayResolver.resolve(event.payload().provider());
         var result = gateway.createPayment(payment);
 
         payment.attachProviderPaymentId(result.providerReferenceId(), result.checkoutUrl());

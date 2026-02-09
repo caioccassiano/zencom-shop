@@ -13,6 +13,7 @@ import com.example.zencom.zencom_shop.modules.shared.application.utils.Integrati
 import com.example.zencom.zencom_shop.modules.shared.ids.OrderId;
 
 import java.util.Optional;
+import java.util.UUID;
 
 
 public class ApproveOrderUseCase {
@@ -36,7 +37,8 @@ public class ApproveOrderUseCase {
         order.confirm();//core
         finalizeInventory(order);//side effects
         ordersRepository.save(order);
-        integrationEventEmitter.emitFrom(order); //side effects
+        UUID requestId = UUID.fromString(order.getRequestId());
+        integrationEventEmitter.emitFrom(order, requestId); //side effects
     }
 
     private void finalizeInventory(Order order) {

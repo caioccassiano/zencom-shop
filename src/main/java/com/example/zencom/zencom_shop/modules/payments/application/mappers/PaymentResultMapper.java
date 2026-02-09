@@ -13,6 +13,7 @@ public final class PaymentResultMapper {
                 payment.getAmount(),
                 payment.getCurrency(),
                 payment.getProvider(),
+                payment.getRequestId(),
                 payment.getStatus()
         );
     }

@@ -29,6 +29,7 @@ public class CancelOrderUseCase {
                         new OrderNotFoundException("Order with id " + orderId + " not found"));
         order.cancel();
         this.ordersRepository.save(order);
-        integrationEventEmitter.emitFrom(order);
+        UUID requestId = UUID.fromString(order.getRequestId());
+        integrationEventEmitter.emitFrom(order, requestId);
     }
 }

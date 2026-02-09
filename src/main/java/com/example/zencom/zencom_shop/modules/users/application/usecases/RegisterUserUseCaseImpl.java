@@ -5,25 +5,26 @@ import com.example.zencom.zencom_shop.modules.users.application.dtos.input.Regis
 import com.example.zencom.zencom_shop.modules.users.application.dtos.output.UserResultDTO;
 import com.example.zencom.zencom_shop.modules.users.application.exception.EmailAlreadyInUseException;
 import com.example.zencom.zencom_shop.modules.users.application.mappers.UserResultMapper;
-import com.example.zencom.zencom_shop.modules.users.application.ports.PasswordHasher;
-import com.example.zencom.zencom_shop.modules.users.application.ports.UserRepository;
+import com.example.zencom.zencom_shop.modules.users.application.ports.in.RegisterUserUseCase;
+import com.example.zencom.zencom_shop.modules.users.application.ports.out.PasswordHasher;
+import com.example.zencom.zencom_shop.modules.users.application.ports.out.UserRepository;
 import com.example.zencom.zencom_shop.modules.users.domain.entities.User;
 import com.example.zencom.zencom_shop.modules.users.domain.enums.NotificationChannel;
-import com.example.zencom.zencom_shop.modules.users.domain.events.UserCreatedDomainEvent;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-public class RegisterUserUseCase {
+@Service
+public class RegisterUserUseCaseImpl implements RegisterUserUseCase {
     private final UserRepository userRepository;
     private final PasswordHasher hasher;
-    private final IntegrationEventEmitter emitter;
 
-    public RegisterUserUseCase(UserRepository userRepository, PasswordHasher hasher, IntegrationEventEmitter emitter) {
+    public RegisterUserUseCaseImpl(UserRepository userRepository, PasswordHasher hasher) {
         this.userRepository = userRepository;
         this.hasher = hasher;
-        this.emitter = emitter;
     }
 
+    @Override
     public UserResultDTO execute(RegisterUserCommandDTO command){
         validateCommand(command);
         validateEmail(command.email());
@@ -37,7 +38,6 @@ public class RegisterUserUseCase {
                 command.phoneNumber()
         );
         userRepository.save(user);
-        emitter.emitFrom(user, null);
         return UserResultMapper.toDTO(user);
 
 

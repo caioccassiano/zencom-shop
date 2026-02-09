@@ -1,4 +1,4 @@
-package com.example.zencom.zencom_shop.modules.users.application.ports;
+package com.example.zencom.zencom_shop.modules.users.application.ports.out;
 
 import com.example.zencom.zencom_shop.modules.shared.ids.UserId;
 import com.example.zencom.zencom_shop.modules.users.domain.entities.User;
@@ -11,5 +11,6 @@ public interface UserRepository {
     Optional<User> findByEmail(String email);
     Optional<User>findById(UserId id);
     List<User> findAll();
+    boolean existsByEmail(String email);
 
 }

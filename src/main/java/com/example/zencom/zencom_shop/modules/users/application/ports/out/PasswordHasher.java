@@ -1,4 +1,4 @@
-package com.example.zencom.zencom_shop.modules.users.application.ports;
+package com.example.zencom.zencom_shop.modules.users.application.ports.out;
 
 public interface PasswordHasher {
     String hashPassword(String password);
