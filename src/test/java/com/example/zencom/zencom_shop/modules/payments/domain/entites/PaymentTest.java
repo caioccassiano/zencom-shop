@@ -20,6 +20,7 @@ public class PaymentTest {
     private PaymentProvider paymentProvider;
     private PaymentCurrency paymentCurrency;
     private String providerId;
+    private String requestId;
 
 
     @BeforeEach
@@ -28,6 +29,7 @@ public class PaymentTest {
         paymentProvider = PaymentProvider.ABACATEPAY;
         paymentCurrency = PaymentCurrency.BRL;
         providerId = UUID.randomUUID().toString();
+        requestId = UUID.randomUUID().toString();
 
     }
 
@@ -37,7 +39,8 @@ public class PaymentTest {
                 orderId,
                 new BigDecimal("123.50"),
                 paymentProvider,
-                paymentCurrency
+                paymentCurrency,
+                requestId
         );
 
         assertNotNull(payment);
@@ -60,7 +63,8 @@ public class PaymentTest {
                 UUID.randomUUID(),
                 new BigDecimal("123.50"),
                 paymentProvider,
-                paymentCurrency
+                paymentCurrency,
+                requestId
         );
         var event = (PaymentCreatedDomainEvent) payment.pullDomainEvents().getFirst();
         assertNotNull(event);
@@ -73,7 +77,8 @@ public class PaymentTest {
                 orderId,
                 new BigDecimal("123.50"),
                 paymentProvider,
-                paymentCurrency
+                paymentCurrency,
+                requestId
         );
         payment.authorize(providerId);
 
@@ -88,7 +93,8 @@ public class PaymentTest {
                 UUID.randomUUID(),
                 new BigDecimal("123.50"),
                 paymentProvider,
-                paymentCurrency
+                paymentCurrency,
+                requestId
         );
         assertThrows(NullPointerException.class, () -> {
             payment.authorize(null);
@@ -101,7 +107,8 @@ public class PaymentTest {
                 UUID.randomUUID(),
                 new BigDecimal("123.50"),
                 paymentProvider,
-                paymentCurrency
+                paymentCurrency,
+                requestId
         );
         payment.authorize(providerId);
         payment.capture();
@@ -114,7 +121,8 @@ public class PaymentTest {
                 UUID.randomUUID(),
                 new BigDecimal("123.50"),
                 paymentProvider,
-                paymentCurrency
+                paymentCurrency,
+                requestId
         );
         assertThrows(InvalidPaymentStateException.class, () -> {
             payment.capture();
@@ -127,7 +135,8 @@ public class PaymentTest {
                 UUID.randomUUID(),
                 new BigDecimal("123.50"),
                 paymentProvider,
-                paymentCurrency
+                paymentCurrency,
+                requestId
         );
         payment.cancel("Has not enough funds", Instant.now());
         assertEquals(PaymentStatus.CANCELED, payment.getStatus());;
@@ -139,7 +148,8 @@ public class PaymentTest {
                 UUID.randomUUID(),
                 new BigDecimal("123.50"),
                 paymentProvider,
-                paymentCurrency
+                paymentCurrency,
+                requestId
         );
         payment.authorize(providerId);
         payment.capture();

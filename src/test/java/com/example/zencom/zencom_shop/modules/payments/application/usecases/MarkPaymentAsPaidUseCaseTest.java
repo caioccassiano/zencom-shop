@@ -33,11 +33,13 @@ class MarkPaymentAsPaidUseCaseTest {
 
     @Test
     void should_mark_payment_as_paid() {
+        String requestId = "requestId";
         Payment payment = Payment.create(
                 UUID.randomUUID(),
                 new BigDecimal("120.00"),
                 ABACATEPAY,
-                PaymentCurrency.BRL
+                PaymentCurrency.BRL,
+                requestId
         );
         payment.attachProviderPaymentId("pi_123", null);
         when(repository.findByProviderId("pi_123"))
@@ -51,7 +53,7 @@ class MarkPaymentAsPaidUseCaseTest {
         assertTrue(payment.isPaid());
         verify(repository).findByProviderId("pi_123");
         verify(repository).save(payment);
-        verify(emitter).emitFrom(payment);
+        verify(emitter).emitFrom(payment, UUID.fromString(requestId));
     }
 
     @Test

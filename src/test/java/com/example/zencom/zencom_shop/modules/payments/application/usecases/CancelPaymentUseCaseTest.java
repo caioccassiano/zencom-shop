@@ -24,11 +24,14 @@ class CancelPaymentUseCaseTest {
     private IntegrationEventEmitter emitter;
     private CancelPaymentUseCase useCase;
 
+    String requestId = UUID.randomUUID().toString();
+
     @BeforeEach
     void setUp() {
         repository = mock(PaymentRepository.class);
         emitter = mock(IntegrationEventEmitter.class);
         useCase = new CancelPaymentUseCase(repository, emitter);
+
     }
 
     @Test
@@ -37,7 +40,8 @@ class CancelPaymentUseCaseTest {
                 UUID.randomUUID(),
                 new BigDecimal("100.00"),
                 PaymentProvider.STRIPE,
-                PaymentCurrency.BRL
+                PaymentCurrency.BRL,
+                requestId
         );
 
         payment.attachProviderPaymentId("pi_123", null);
@@ -54,7 +58,7 @@ class CancelPaymentUseCaseTest {
         assertTrue(payment.isCancelled());
         verify(repository).findByProviderId("pi_123");
         verify(repository).save(payment);
-        verify(emitter).emitFrom(payment);
+        verify(emitter).emitFrom(payment, UUID.fromString(requestId));
     }
 
     @Test
@@ -63,7 +67,8 @@ class CancelPaymentUseCaseTest {
                     UUID.randomUUID(),
                     new BigDecimal("100.00"),
                     PaymentProvider.STRIPE,
-                    PaymentCurrency.BRL
+                    PaymentCurrency.BRL,
+                    requestId
             );
 
             payment.attachProviderPaymentId("pi_123", null);
@@ -77,7 +82,7 @@ class CancelPaymentUseCaseTest {
 
         verify(repository).findByProviderId("pi_123");
         verify(repository, never()).save(any());
-        verify(emitter, never()).emitFrom(any());
+        verify(emitter, never()).emitFrom(any(), UUID.fromString(requestId));
     }
 
 }

@@ -33,11 +33,13 @@ public class MarkPaymentAsFailedUseCaseTest {
     @Test
     void should_mark_payment_as_failed() {
         UUID orderId = UUID.randomUUID();
+        String requestId = UUID.randomUUID().toString();
         Payment payment = Payment.create(
                 orderId,
                 new BigDecimal("1250.00"),
                 PaymentProvider.ABACATEPAY,
-                PaymentCurrency.BRL
+                PaymentCurrency.BRL,
+                requestId
         );
         payment.attachProviderPaymentId("pi-123", null);
 
@@ -58,11 +60,13 @@ public class MarkPaymentAsFailedUseCaseTest {
     @Test
     void should_throw_exception_when_payment_not_found() {
         UUID orderId = UUID.randomUUID();
+        String requestId = UUID.randomUUID().toString();
         Payment payment = Payment.create(
                 orderId,
                 new BigDecimal("1250.00"),
                 PaymentProvider.ABACATEPAY,
-                PaymentCurrency.BRL
+                PaymentCurrency.BRL,
+                requestId
         );
         payment.attachProviderPaymentId("pi-123", null);
         when(repository.findByProviderId("pi_123"))
@@ -75,6 +79,6 @@ public class MarkPaymentAsFailedUseCaseTest {
 
         verify(repository).findByProviderId("pi_123");
         verify(repository, never()).save(any());
-        verify(emitter, never()).emitFrom(any());
+        verify(emitter, never()).emitFrom(any(Payment.class), UUID.fromString(requestId));
     }
 }

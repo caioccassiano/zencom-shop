@@ -2,8 +2,10 @@ package com.example.zencom.zencom_shop.modules.catalog.application.usecases.admi
 
 import com.example.zencom.zencom_shop.modules.catalog.application.dtos.product.inputs.CreateProductCommand;
 import com.example.zencom.zencom_shop.modules.catalog.application.dtos.product.outputs.ProductResultDTO;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.inventory.InventoryItemRepository;
 import com.example.zencom.zencom_shop.modules.catalog.application.ports.product.ProductRepository;
 import com.example.zencom.zencom_shop.modules.catalog.application.usecases.product.admin.CreateProductUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.InventoryItem;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.product.Product;
 import com.example.zencom.zencom_shop.modules.catalog.domain.exceptions.InvalidPriceException;
 import com.example.zencom.zencom_shop.modules.shared.application.utils.IntegrationEventEmitter;
@@ -21,12 +23,13 @@ class CreateProductUseCaseTest {
 
     private CreateProductUseCase createProductUseCase;
     private ProductRepository productRepository;
-    private IntegrationEventEmitter emitter;
+    private InventoryItemRepository inventoryItemRepository;
 
     @BeforeEach
     void setUp() {
         productRepository = mock(ProductRepository.class);
-        createProductUseCase = new CreateProductUseCase(productRepository, emitter);
+        inventoryItemRepository = mock(InventoryItemRepository.class);
+        createProductUseCase = new CreateProductUseCase(productRepository, inventoryItemRepository);
     }
 
     @Test
@@ -39,6 +42,7 @@ class CreateProductUseCaseTest {
         ProductResultDTO result = createProductUseCase.create(command);
         assertNotNull(result);
         verify(productRepository, times(1)).save(any(Product.class));
+        verify(inventoryItemRepository, times(1)).save(any(InventoryItem.class));
         verifyNoMoreInteractions(productRepository);
     }
 
