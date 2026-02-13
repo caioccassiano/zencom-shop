@@ -13,6 +13,11 @@ public record ProductUpdatedIntegrationEvent(
 ) implements IntegrationEvent<ProductUpdatedIntegrationEvent.ProductUpdatedPayload> {
 
     public final static String TYPE = "products.product_updated.v1";
+    public static final String ROUTING_KEY = "product.updated";
+
+    public String routingKey() {
+        return ROUTING_KEY;
+    }
 
     public record ProductUpdatedPayload(
             UUID productId

@@ -13,9 +13,12 @@ public record UserCreatedIntegrationEvent (
 )implements IntegrationEvent<UserCreatedIntegrationEvent.Payload> {
 
     public static final String TYPE = "users.user_created.v1";
+    public static final String ROUTING_KEY = "user.created";
 
-
-
+    @Override
+    public String routingKey() {
+        return ROUTING_KEY;
+    }
     public record Payload(
             UUID userId,
             String email,

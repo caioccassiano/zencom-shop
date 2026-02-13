@@ -14,6 +14,11 @@ public record OrderCreatedIntegrationEvent(
 ) implements IntegrationEvent<OrderCreatedIntegrationEvent.Payload> {
 
     public static final String TYPE = "orders.order_created.v1";
+    public static final String ROUTING_KEY = "order.created";
+
+    public String routingKey() {
+        return ROUTING_KEY;
+    }
 
     public record Payload(
             UUID orderId,

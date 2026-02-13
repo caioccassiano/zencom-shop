@@ -13,6 +13,11 @@ public record PaymentAuthorizedIntegrationEvent(
 ) implements IntegrationEvent<PaymentAuthorizedIntegrationEvent.PaymentAuthorizedPayload> {
 
     public final static String TYPE = "payments.payment_authorized.v1";
+    public static final String ROUTING_KEY = "payment.authorized";
+
+    public String routingKey() {
+        return ROUTING_KEY;
+    }
 
     public record PaymentAuthorizedPayload(
             UUID paymentId,

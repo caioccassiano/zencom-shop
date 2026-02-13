@@ -15,6 +15,12 @@ public record ProductCreatedIntegrationEvent(
 ) implements IntegrationEvent<ProductCreatedIntegrationEvent.ProductCreatedPayload> {
 
     public static final String TYPE = "products.product_created.v1";
+    public static final String ROUTING_KEY = "product.created";
+
+    @Override
+    public String routingKey() {
+        return ROUTING_KEY;
+    }
 
     public record ProductCreatedPayload(
             UUID productId,

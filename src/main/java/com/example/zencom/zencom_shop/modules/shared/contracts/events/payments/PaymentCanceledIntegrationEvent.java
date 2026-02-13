@@ -13,6 +13,11 @@ public record PaymentCanceledIntegrationEvent(
 ) implements IntegrationEvent<PaymentCanceledIntegrationEvent.PaymentCanceledPayload> {
 
   public final static String TYPE = "payments.payment_canceled.v1";
+  public static final String ROUTING_KEY = "payment.canceled";
+
+  public String routingKey() {
+    return ROUTING_KEY;
+  }
 
   public record PaymentCanceledPayload(
           UUID paymentId,

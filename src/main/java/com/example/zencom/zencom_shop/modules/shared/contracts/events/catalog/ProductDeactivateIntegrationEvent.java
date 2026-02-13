@@ -14,6 +14,12 @@ public record ProductDeactivateIntegrationEvent(
 )implements IntegrationEvent<ProductDeactivateIntegrationEvent.ProductDeactivatedPayload> {
 
     public static final String TYPE = "products.product_deactivated.v1";
+    public static final String ROUTING_KEY = "product.deactivated";
+
+    @Override
+    public String routingKey() {
+        return ROUTING_KEY;
+    }
 
     public record ProductDeactivatedPayload(
             UUID productId

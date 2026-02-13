@@ -13,6 +13,11 @@ public record PaymentFailedIntegrationEvent(
 ) implements IntegrationEvent<PaymentFailedIntegrationEvent.PaymentFailedPayload> {
 
     public final static String TYPE = "payments.payment_failed.v1";
+    public static final String ROUTING_KEY = "payment.failed";
+
+    public String routingKey() {
+        return ROUTING_KEY;
+    }
 
     public record PaymentFailedPayload(
             UUID paymentId,

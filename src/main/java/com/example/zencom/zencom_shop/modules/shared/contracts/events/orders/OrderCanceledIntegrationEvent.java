@@ -15,6 +15,11 @@ public record OrderCanceledIntegrationEvent(
 ) implements IntegrationEvent<OrderCanceledIntegrationEvent.OrderCanceledPayload> {
 
     public final static String TYPE = "orders.order_canceled.v1";
+    public static final String ROUTING_KEY = "order.canceled";
+
+    public String routingKey() {
+        return ROUTING_KEY;
+    }
 
     public record Item(
             UUID productId,

@@ -14,6 +14,12 @@ public record PaymentPaidIntegrationEvent(
 ) implements IntegrationEvent<PaymentPaidIntegrationEvent.PaymentPaidPayload> {
 
     public final static String TYPE = "payments.payment_paid.v1";
+    public static final String ROUTING_KEY = "payment.paid";
+
+    @Override
+    public String routingKey() {
+        return ROUTING_KEY;
+    }
 
     public record PaymentPaidPayload(
             UUID paymentId,
