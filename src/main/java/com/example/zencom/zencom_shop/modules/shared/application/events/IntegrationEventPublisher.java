@@ -8,7 +8,7 @@ public interface IntegrationEventPublisher {
 
     void publish(List<IntegrationEvent<?>> events);
 
-    default void publish(IntegrationEvent event) {
+    default void publish(IntegrationEvent<?> event) {
         publish(List.of(event));
     }
 }
