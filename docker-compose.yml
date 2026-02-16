@@ -3,9 +3,9 @@ services:
     image: bitnami/postgresql:latest
     container_name: zencom-postgres
     environment:
-      - POSTGRESQL_DATABASE=zencom
-      - POSTGRESQL_USERNAME=zencom
-      - POSTGRESQL_PASSWORD=zencom
+      - POSTGRESQL_DATABASE=${POSTGRES_DB}
+      - POSTGRESQL_USERNAME=${POSTGRES_USER}
+      - POSTGRESQL_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "5435:5432"
     volumes:
@@ -20,8 +20,8 @@ services:
     image: rabbitmq:3-management
     container_name: zencom-rabbitmq
     environment:
-      RABBITMQ_DEFAULT_USER: zencom
-      RABBITMQ_DEFAULT_PASS: zencom
+      RABBITMQ_DEFAULT_USER: ${RABBIT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBIT_PASSWORD}
     ports:
       - "5672:5672"
       - "15672:15672"
