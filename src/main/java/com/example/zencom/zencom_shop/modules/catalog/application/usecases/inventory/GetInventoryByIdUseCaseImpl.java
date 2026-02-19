@@ -4,14 +4,19 @@ import com.example.zencom.zencom_shop.modules.catalog.application.dtos.inventory
 import com.example.zencom.zencom_shop.modules.catalog.application.dtos.inventory.output.InventoryItemResultDTO;
 import com.example.zencom.zencom_shop.modules.catalog.application.exceptions.InventoryItemNotFoundException;
 import com.example.zencom.zencom_shop.modules.catalog.application.mappers.InventoryItemResultMapper;
-import com.example.zencom.zencom_shop.modules.catalog.application.ports.inventory.InventoryItemRepository;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.in.inventory.GetInventoryByIdUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.inventory.InventoryItemRepository;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.InventoryItem;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-public class GetInventoryByIdUseCase {
+@Service
+@Transactional(readOnly = true)
+public class GetInventoryByIdUseCaseImpl implements GetInventoryByIdUseCase {
     private final InventoryItemRepository inventoryItemRepository;
 
-    public GetInventoryByIdUseCase(InventoryItemRepository inventoryItemRepository) {
+    public GetInventoryByIdUseCaseImpl(InventoryItemRepository inventoryItemRepository) {
         this.inventoryItemRepository = inventoryItemRepository;
     }
 
