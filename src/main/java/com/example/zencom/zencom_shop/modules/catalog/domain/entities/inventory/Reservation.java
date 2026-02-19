@@ -48,6 +48,24 @@ public class Reservation {
         );
     }
 
+    public static Reservation restore(
+            UUID reservationId,
+            String requestId,
+            UUID customerId,
+            List<ReservationItem> items,
+            Instant createdAt,
+            ReservationStatus status
+    ){
+        return new Reservation(
+                reservationId,
+                requestId,
+                customerId,
+                items,
+                createdAt,
+                status
+        );
+    }
+
     public UUID reservationId() { return reservationId; }
     public String requestId() { return requestId; }
     public UUID customerId() { return customerId; }
