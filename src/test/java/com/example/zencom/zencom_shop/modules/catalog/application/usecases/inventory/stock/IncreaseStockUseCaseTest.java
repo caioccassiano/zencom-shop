@@ -2,7 +2,7 @@ package com.example.zencom.zencom_shop.modules.catalog.application.usecases.inve
 
 import com.example.zencom.zencom_shop.modules.catalog.application.dtos.inventory.input.AddStockCommandDTO;
 import com.example.zencom.zencom_shop.modules.catalog.application.exceptions.InventoryItemNotFoundException;
-import com.example.zencom.zencom_shop.modules.catalog.application.ports.inventory.InventoryItemRepository;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.inventory.InventoryItemRepository;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.InventoryItem;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 import org.junit.jupiter.api.BeforeEach;
