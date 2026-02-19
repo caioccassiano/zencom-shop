@@ -32,7 +32,7 @@ public class ProductRepositoryAdapter  implements ProductRepository {
 
     @Override
     public Optional<Product> findByName(String name) {
-        return jpaRepository.findByProductName(name)
+        return jpaRepository.findByName(name)
                 .map(ProductPersistenceMapper::toDomain);
     }
 
@@ -45,7 +45,7 @@ public class ProductRepositoryAdapter  implements ProductRepository {
 
     @Override
     public List<Product> findAllActive() {
-        return jpaRepository.findByProductStatus(ProductStatus.ACTIVE).stream()
+        return jpaRepository.findByStatus(ProductStatus.ACTIVE).stream()
                 .map(ProductPersistenceMapper::toDomain)
                 .toList();
     }

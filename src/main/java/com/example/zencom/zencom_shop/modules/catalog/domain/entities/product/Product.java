@@ -61,6 +61,27 @@ public class Product extends AggregateRoot {
         ));
         return product;
     }
+
+    public static Product restore(
+            ProductId id,
+            String name,
+            String description,
+            BigDecimal price,
+            ProductStatus status,
+            Instant createdAt,
+            Instant updatedAt
+    ) {
+        return new Product(
+                id,
+                name,
+                description,
+                price,
+                status,
+                createdAt,
+                updatedAt
+        );
+    }
+
     public void update(String name, String description, BigDecimal price) {
         if (name != null) setName(name);
         if (description != null) setDescription(description);
