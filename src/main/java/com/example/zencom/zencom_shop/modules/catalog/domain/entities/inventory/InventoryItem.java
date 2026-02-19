@@ -5,6 +5,7 @@ import com.example.zencom.zencom_shop.modules.catalog.domain.exceptions.InvalidS
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 
 import java.time.Instant;
+import java.util.UUID;
 
 public class InventoryItem {
     private final ProductId productId;
@@ -34,6 +35,21 @@ public class InventoryItem {
             ProductId productId){
         Instant now = Instant.now();
         return new InventoryItem(productId, 0, 0, now, now);
+    }
+    public static InventoryItem restore(
+            UUID productId,
+            int availableQuantity,
+            int reservedQuantity,
+            Instant createdAt,
+            Instant updatedAt
+    ){
+        return new InventoryItem(
+                ProductId.from_UUID(productId),
+                availableQuantity,
+                reservedQuantity,
+                createdAt,
+                updatedAt
+        );
     }
 
     //Add Stock (ADMIN only)
