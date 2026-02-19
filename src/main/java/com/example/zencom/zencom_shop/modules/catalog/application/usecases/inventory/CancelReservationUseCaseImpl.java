@@ -1,20 +1,25 @@
 package com.example.zencom.zencom_shop.modules.catalog.application.usecases.inventory;
 
 import com.example.zencom.zencom_shop.modules.catalog.application.dtos.inventory.input.reservation.CancelReservationCommandDTO;
-import com.example.zencom.zencom_shop.modules.catalog.application.ports.inventory.InventoryItemRepository;
-import com.example.zencom.zencom_shop.modules.catalog.application.ports.inventory.ReservationRepository;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.in.inventory.CancelReservationUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.inventory.InventoryItemRepository;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.inventory.ReservationRepository;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.InventoryItem;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.Reservation;
 import com.example.zencom.zencom_shop.modules.catalog.domain.enums.ReservationStatus;
 import com.example.zencom.zencom_shop.modules.catalog.domain.vo.ReservationItem;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-public class CancelReservationUseCase {
+@Service
+@Transactional
+public class CancelReservationUseCaseImpl implements CancelReservationUseCase {
     private final ReservationRepository reservationRepository;
     private final InventoryItemRepository inventoryItemRepository;
 
-    public CancelReservationUseCase(ReservationRepository reservationRepository, InventoryItemRepository itemRepository) {
+    public CancelReservationUseCaseImpl(ReservationRepository reservationRepository, InventoryItemRepository itemRepository) {
         this.reservationRepository = reservationRepository;
         this.inventoryItemRepository = itemRepository;
     }

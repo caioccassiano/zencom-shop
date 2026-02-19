@@ -1,20 +1,26 @@
 package com.example.zencom.zencom_shop.modules.catalog.application.usecases.inventory;
 
 import com.example.zencom.zencom_shop.modules.catalog.application.dtos.inventory.input.reservation.CommitReservationCommandDTO;
-import com.example.zencom.zencom_shop.modules.catalog.application.ports.inventory.InventoryItemRepository;
-import com.example.zencom.zencom_shop.modules.catalog.application.ports.inventory.ReservationRepository;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.in.inventory.CommitReservationUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.in.inventory.stock.CommitStockUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.inventory.InventoryItemRepository;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.inventory.ReservationRepository;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.InventoryItem;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.Reservation;
 import com.example.zencom.zencom_shop.modules.catalog.domain.enums.ReservationStatus;
 import com.example.zencom.zencom_shop.modules.catalog.domain.vo.ReservationItem;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-public class CommitReservationUseCase {
+@Service
+@Transactional
+public class CommitReservationUseCaseImpl implements CommitReservationUseCase {
     private final ReservationRepository reservationRepository;
     private final InventoryItemRepository inventoryItemRepository;
 
-    public CommitReservationUseCase(ReservationRepository reservationRepository, InventoryItemRepository itemRepository) {
+    public CommitReservationUseCaseImpl(ReservationRepository reservationRepository, InventoryItemRepository itemRepository) {
         this.reservationRepository = reservationRepository;
         this.inventoryItemRepository = itemRepository;
     }

@@ -1,23 +1,28 @@
 package com.example.zencom.zencom_shop.modules.catalog.application.usecases.inventory;
 
 import com.example.zencom.zencom_shop.modules.catalog.application.dtos.inventory.input.reservation.CreateReservationCommandDTO;
-import com.example.zencom.zencom_shop.modules.catalog.application.ports.inventory.InventoryItemRepository;
-import com.example.zencom.zencom_shop.modules.catalog.application.ports.inventory.ReservationRepository;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.in.inventory.CreateReservationUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.inventory.InventoryItemRepository;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.inventory.ReservationRepository;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.InventoryItem;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.Reservation;
 import com.example.zencom.zencom_shop.modules.catalog.domain.enums.ReservationStatus;
 import com.example.zencom.zencom_shop.modules.catalog.domain.vo.ReservationItem;
 import com.example.zencom.zencom_shop.modules.payments.domain.exceptions.InvalidInputException;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class CreateReservationUseCase {
+@Service
+@Transactional
+public class CreateReservationUseCaseImpl implements CreateReservationUseCase {
     private final InventoryItemRepository inventoryItemRepository;
     private final ReservationRepository reservationRepository;
 
-    public CreateReservationUseCase(InventoryItemRepository inventoryItemRepository, ReservationRepository reservationRepository) {
+    public CreateReservationUseCaseImpl(InventoryItemRepository inventoryItemRepository, ReservationRepository reservationRepository) {
         this.inventoryItemRepository = inventoryItemRepository;
         this.reservationRepository = reservationRepository;
     }

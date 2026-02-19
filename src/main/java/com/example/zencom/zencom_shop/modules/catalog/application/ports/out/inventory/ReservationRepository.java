@@ -1,4 +1,4 @@
-package com.example.zencom.zencom_shop.modules.catalog.application.ports.inventory;
+package com.example.zencom.zencom_shop.modules.catalog.application.ports.out.inventory;
 
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.Reservation;
 
