@@ -2,7 +2,7 @@ package com.example.zencom.zencom_shop.modules.inventory.application.usecases;
 
 import com.example.zencom.zencom_shop.modules.catalog.application.dtos.inventory.input.CreateInventoryItemCommand;
 import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.inventory.InventoryItemRepository;
-import com.example.zencom.zencom_shop.modules.catalog.application.usecases.inventory.CreateInventoryUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.application.usecases.inventory.CreateInventoryItemUseCaseImpl;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.InventoryItem;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,13 +14,13 @@ import static org.mockito.Mockito.*;
 
 class CreateInventoryUseCaseTest {
 
-    private CreateInventoryUseCase createInventoryUseCase;
+    private CreateInventoryItemUseCaseImpl createInventoryUseCase;
     private InventoryItemRepository inventoryItemRepository;
 
     @BeforeEach
     void setUp() {
         inventoryItemRepository = mock(InventoryItemRepository.class);
-        createInventoryUseCase = new CreateInventoryUseCase(inventoryItemRepository);
+        createInventoryUseCase = new CreateInventoryItemUseCaseImpl(inventoryItemRepository);
     }
 
     @Test

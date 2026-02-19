@@ -15,13 +15,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class IncreaseStockUseCaseTest {
-    private IncreaseStockUseCase useCase;
+    private IncreaseStockUseCaseImpl useCase;
     private InventoryItemRepository inventoryItemRepository;
 
     @BeforeEach
     void setUp() {
         inventoryItemRepository = mock(InventoryItemRepository.class);
-        useCase = new IncreaseStockUseCase(inventoryItemRepository);
+        useCase = new IncreaseStockUseCaseImpl(inventoryItemRepository);
     }
 
     @Test

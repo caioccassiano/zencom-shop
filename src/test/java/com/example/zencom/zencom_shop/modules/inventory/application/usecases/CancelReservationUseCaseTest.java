@@ -3,7 +3,7 @@ package com.example.zencom.zencom_shop.modules.inventory.application.usecases;
 import com.example.zencom.zencom_shop.modules.catalog.application.dtos.inventory.input.reservation.CancelReservationCommandDTO;
 import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.inventory.InventoryItemRepository;
 import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.inventory.ReservationRepository;
-import com.example.zencom.zencom_shop.modules.catalog.application.usecases.inventory.CancelReservationUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.application.usecases.inventory.CancelReservationUseCaseImpl;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.InventoryItem;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.Reservation;
 import com.example.zencom.zencom_shop.modules.catalog.domain.enums.ReservationStatus;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.*;
 
 class CancelReservationUseCaseTest {
-    private CancelReservationUseCase cancelReservationUseCase;
+    private CancelReservationUseCaseImpl cancelReservationUseCase;
     private ReservationRepository reservationRepository;
     private InventoryItemRepository inventoryItemRepository;
 
@@ -41,7 +41,7 @@ class CancelReservationUseCaseTest {
     void setUp() {
         reservationRepository = mock(ReservationRepository.class);
         inventoryItemRepository = mock(InventoryItemRepository.class);
-        cancelReservationUseCase = new CancelReservationUseCase(reservationRepository, inventoryItemRepository);
+        cancelReservationUseCase = new CancelReservationUseCaseImpl(reservationRepository, inventoryItemRepository);
 
 
     }

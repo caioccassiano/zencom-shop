@@ -3,7 +3,7 @@ package com.example.zencom.zencom_shop.modules.inventory.application.usecases;
 import com.example.zencom.zencom_shop.modules.catalog.application.dtos.inventory.input.reservation.CreateReservationCommandDTO;
 import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.inventory.InventoryItemRepository;
 import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.inventory.ReservationRepository;
-import com.example.zencom.zencom_shop.modules.catalog.application.usecases.inventory.CreateReservationUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.application.usecases.inventory.CreateReservationUseCaseImpl;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.InventoryItem;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.Reservation;
 import com.example.zencom.zencom_shop.modules.catalog.domain.enums.ReservationStatus;
@@ -25,13 +25,13 @@ class CreateReservationUseCaseTest {
     private InventoryItemRepository inventoryItemRepository;
     private ReservationRepository reservationRepository;
 
-    private CreateReservationUseCase createReservationUseCase;
+    private CreateReservationUseCaseImpl createReservationUseCase;
 
     @BeforeEach
     void setUp() {
         inventoryItemRepository = mock(InventoryItemRepository.class);
         reservationRepository = mock(ReservationRepository.class);
-        createReservationUseCase = new CreateReservationUseCase(inventoryItemRepository, reservationRepository);
+        createReservationUseCase = new CreateReservationUseCaseImpl(inventoryItemRepository, reservationRepository);
 
     }
 

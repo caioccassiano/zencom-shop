@@ -3,7 +3,7 @@ package com.example.zencom.zencom_shop.modules.inventory.application.usecases;
 import com.example.zencom.zencom_shop.modules.catalog.application.dtos.inventory.input.reservation.CommitReservationCommandDTO;
 import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.inventory.InventoryItemRepository;
 import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.inventory.ReservationRepository;
-import com.example.zencom.zencom_shop.modules.catalog.application.usecases.inventory.CommitReservationUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.application.usecases.inventory.CommitReservationUseCaseImpl;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.InventoryItem;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.Reservation;
 import com.example.zencom.zencom_shop.modules.catalog.domain.enums.ReservationStatus;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
 
 class CommitReservationUseCaseTest {
 
-    private CommitReservationUseCase commitReservationUseCase;
+    private CommitReservationUseCaseImpl commitReservationUseCase;
     private ReservationRepository reservationRepository;
     private InventoryItemRepository inventoryItemRepository;
 
@@ -29,7 +29,7 @@ class CommitReservationUseCaseTest {
     void setUp() {
         reservationRepository = mock(ReservationRepository.class);
         inventoryItemRepository = mock(InventoryItemRepository.class);
-        commitReservationUseCase = new CommitReservationUseCase(reservationRepository, inventoryItemRepository);
+        commitReservationUseCase = new CommitReservationUseCaseImpl(reservationRepository, inventoryItemRepository);
     }
 
     @Test

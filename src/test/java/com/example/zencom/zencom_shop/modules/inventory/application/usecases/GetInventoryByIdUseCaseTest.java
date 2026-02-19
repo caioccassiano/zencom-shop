@@ -4,7 +4,7 @@ import com.example.zencom.zencom_shop.modules.catalog.application.dtos.inventory
 import com.example.zencom.zencom_shop.modules.catalog.application.dtos.inventory.output.InventoryItemResultDTO;
 import com.example.zencom.zencom_shop.modules.catalog.application.exceptions.InventoryItemNotFoundException;
 import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.inventory.InventoryItemRepository;
-import com.example.zencom.zencom_shop.modules.catalog.application.usecases.inventory.GetInventoryByIdUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.application.usecases.inventory.GetInventoryByIdUseCaseImpl;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.InventoryItem;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,12 +18,12 @@ import static org.mockito.Mockito.*;
 
 class GetInventoryByIdUseCaseTest {
     InventoryItemRepository inventoryItemRepository;
-    GetInventoryByIdUseCase getInventoryByIdUseCase;
+    GetInventoryByIdUseCaseImpl getInventoryByIdUseCase;
 
     @BeforeEach
     void setUp() {
         inventoryItemRepository = mock(InventoryItemRepository.class);
-        getInventoryByIdUseCase = new GetInventoryByIdUseCase(inventoryItemRepository);
+        getInventoryByIdUseCase = new GetInventoryByIdUseCaseImpl(inventoryItemRepository);
     }
 
     @Test
