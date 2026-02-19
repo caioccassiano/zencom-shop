@@ -2,13 +2,18 @@ package com.example.zencom.zencom_shop.modules.catalog.application.usecases.prod
 
 import com.example.zencom.zencom_shop.modules.catalog.application.dtos.product.outputs.ProductResultDTO;
 import com.example.zencom.zencom_shop.modules.catalog.application.mappers.ProductResultMapper;
-import com.example.zencom.zencom_shop.modules.catalog.application.ports.product.ProductRepository;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.in.product.ListAllActiveProductsUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.product.ProductRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public class ListAllActiveProductsUseCase {
+@Service
+@Transactional(readOnly = true)
+public class ListAllActiveProductsUseCaseImpl implements ListAllActiveProductsUseCase {
     private final ProductRepository productRepository;
-    public ListAllActiveProductsUseCase(ProductRepository productRepository) {
+    public ListAllActiveProductsUseCaseImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
     public List<ProductResultDTO> getAllActiveProducts() {

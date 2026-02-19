@@ -2,14 +2,19 @@ package com.example.zencom.zencom_shop.modules.catalog.application.usecases.prod
 
 import com.example.zencom.zencom_shop.modules.catalog.application.dtos.product.inputs.ChangeProductStatusCommand;
 import com.example.zencom.zencom_shop.modules.catalog.application.exceptions.ProductDoesNotExistException;
-import com.example.zencom.zencom_shop.modules.catalog.application.ports.product.ProductRepository;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.in.product.ChangeProductStatusUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.product.ProductRepository;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.product.Product;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-public class ChangeProductStatusUseCase {
+@Service
+@Transactional
+public class ChangeProductStatusUseCaseImpl implements ChangeProductStatusUseCase {
 
     private final ProductRepository productRepository;
 
-    public ChangeProductStatusUseCase(ProductRepository productRepository) {
+    public ChangeProductStatusUseCaseImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 

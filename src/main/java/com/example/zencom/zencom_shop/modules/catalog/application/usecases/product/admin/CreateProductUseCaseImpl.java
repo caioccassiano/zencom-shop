@@ -2,20 +2,24 @@ package com.example.zencom.zencom_shop.modules.catalog.application.usecases.prod
 
 import com.example.zencom.zencom_shop.modules.catalog.application.dtos.product.inputs.CreateProductCommand;
 import com.example.zencom.zencom_shop.modules.catalog.application.dtos.product.outputs.ProductResultDTO;
-import com.example.zencom.zencom_shop.modules.catalog.application.ports.inventory.InventoryItemRepository;
-import com.example.zencom.zencom_shop.modules.catalog.application.ports.product.ProductRepository;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.in.product.CreateProductUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.inventory.InventoryItemRepository;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.product.ProductRepository;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.InventoryItem;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.product.Product;
-import com.example.zencom.zencom_shop.modules.shared.application.utils.IntegrationEventEmitter;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.zencom.zencom_shop.modules.catalog.application.mappers.ProductResultMapper.toResult;
 
-public class CreateProductUseCase {
+@Service
+@Transactional
+public class CreateProductUseCaseImpl implements CreateProductUseCase {
 
     private final ProductRepository productRepository;
     private final InventoryItemRepository  inventoryItemRepository;
 
-    public CreateProductUseCase(
+    public CreateProductUseCaseImpl(
             ProductRepository productRepository,
             InventoryItemRepository inventoryItemRepository) {
         this.productRepository = productRepository;

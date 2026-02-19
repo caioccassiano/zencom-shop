@@ -1,4 +1,4 @@
-package com.example.zencom.zencom_shop.modules.catalog.application.usecases.all;
+package com.example.zencom.zencom_shop.modules.catalog.application.usecases.product.all;
 
 import com.example.zencom.zencom_shop.modules.catalog.application.dtos.product.outputs.ProductResultDTO;
 import com.example.zencom.zencom_shop.modules.catalog.application.ports.product.ProductRepository;

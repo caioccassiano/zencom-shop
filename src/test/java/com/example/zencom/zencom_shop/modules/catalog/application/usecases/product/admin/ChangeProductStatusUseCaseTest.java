@@ -1,9 +1,9 @@
-package com.example.zencom.zencom_shop.modules.catalog.application.usecases.admin;
+package com.example.zencom.zencom_shop.modules.catalog.application.usecases.product.admin;
 
 import com.example.zencom.zencom_shop.modules.catalog.application.dtos.product.inputs.ChangeProductStatusCommand;
 import com.example.zencom.zencom_shop.modules.catalog.application.exceptions.ProductDoesNotExistException;
-import com.example.zencom.zencom_shop.modules.catalog.application.ports.product.ProductRepository;
-import com.example.zencom.zencom_shop.modules.catalog.application.usecases.product.admin.ChangeProductStatusUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.in.product.ChangeProductStatusUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.product.ProductRepository;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.product.Product;
 import com.example.zencom.zencom_shop.modules.catalog.domain.enums.ProductStatus;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
@@ -22,7 +22,7 @@ class ChangeProductStatusUseCaseTest {
     @BeforeEach
     void setup() {
         productRepository = mock(ProductRepository.class);
-        useCase = new ChangeProductStatusUseCase(productRepository);
+        useCase = new ChangeProductStatusUseCaseImpl(productRepository);
     }
 
     @Test

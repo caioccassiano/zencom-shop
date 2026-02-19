@@ -1,14 +1,13 @@
-package com.example.zencom.zencom_shop.modules.catalog.application.usecases.admin;
+package com.example.zencom.zencom_shop.modules.catalog.application.usecases.product.admin;
 
 import com.example.zencom.zencom_shop.modules.catalog.application.dtos.product.inputs.CreateProductCommand;
 import com.example.zencom.zencom_shop.modules.catalog.application.dtos.product.outputs.ProductResultDTO;
-import com.example.zencom.zencom_shop.modules.catalog.application.ports.inventory.InventoryItemRepository;
-import com.example.zencom.zencom_shop.modules.catalog.application.ports.product.ProductRepository;
-import com.example.zencom.zencom_shop.modules.catalog.application.usecases.product.admin.CreateProductUseCase;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.inventory.InventoryItemRepository;
+import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.product.ProductRepository;
+import com.example.zencom.zencom_shop.modules.catalog.application.usecases.product.admin.CreateProductUseCaseImpl;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.inventory.InventoryItem;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.product.Product;
 import com.example.zencom.zencom_shop.modules.catalog.domain.exceptions.InvalidPriceException;
-import com.example.zencom.zencom_shop.modules.shared.application.utils.IntegrationEventEmitter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -21,7 +20,7 @@ import static org.mockito.Mockito.*;
 
 class CreateProductUseCaseTest {
 
-    private CreateProductUseCase createProductUseCase;
+    private CreateProductUseCaseImpl createProductUseCase;
     private ProductRepository productRepository;
     private InventoryItemRepository inventoryItemRepository;
 
@@ -29,7 +28,7 @@ class CreateProductUseCaseTest {
     void setUp() {
         productRepository = mock(ProductRepository.class);
         inventoryItemRepository = mock(InventoryItemRepository.class);
-        createProductUseCase = new CreateProductUseCase(productRepository, inventoryItemRepository);
+        createProductUseCase = new CreateProductUseCaseImpl(productRepository, inventoryItemRepository);
     }
 
     @Test
