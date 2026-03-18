@@ -1,5 +1,6 @@
 package com.example.zencom.zencom_shop.modules.catalog.application.usecases.inventory;
 
+import com.example.zencom.zencom_shop.modules.catalog.application.dtos.inventory.output.InventoryItemResultAdminDTO;
 import com.example.zencom.zencom_shop.modules.catalog.application.dtos.inventory.output.InventoryItemResultDTO;
 import com.example.zencom.zencom_shop.modules.catalog.application.mappers.InventoryItemResultMapper;
 import com.example.zencom.zencom_shop.modules.catalog.application.ports.in.inventory.ListInventoryItemsUseCase;
@@ -17,10 +18,7 @@ public class ListInventoryItemsUseCaseImpl implements ListInventoryItemsUseCase 
     public ListInventoryItemsUseCaseImpl(InventoryItemRepository inventoryItemRepository) {
         this.inventoryItemRepository = inventoryItemRepository;
     }
-    public List<InventoryItemResultDTO> execute() {
-        return inventoryItemRepository.findAll()
-                .stream()
-                .map(InventoryItemResultMapper::toDTO)
-                .toList();
+    public List<InventoryItemResultAdminDTO> execute() {
+        return inventoryItemRepository.findAllForAdmin();
     }
 }
