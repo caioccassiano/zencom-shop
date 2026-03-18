@@ -23,7 +23,6 @@ public record OrderCreatedIntegrationEvent(
     public record Payload(
             UUID orderId,
             UUID userId,
-            UUID reservationId,
             BigDecimal totalAmount,
             List<Item> items
     ){}
@@ -39,13 +38,12 @@ public record OrderCreatedIntegrationEvent(
             UUID correlationId,
             UUID orderId,
             UUID userId,
-            UUID reservationId,
             BigDecimal totalAmount,
             List<Item> items
     ){
         return new OrderCreatedIntegrationEvent(
                 new EventMetadata(eventId, occurredAt,TYPE, correlationId),
-                new Payload(orderId, userId, reservationId, totalAmount, items)
+                new Payload(orderId, userId, totalAmount, items)
         );
     }
 

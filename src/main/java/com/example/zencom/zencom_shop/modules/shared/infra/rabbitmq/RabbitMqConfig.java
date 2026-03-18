@@ -1,6 +1,9 @@
 package com.example.zencom.zencom_shop.modules.shared.infra.rabbitmq;
 
 import com.example.zencom.zencom_shop.modules.shared.contracts.events.EventMetadata;
+import com.example.zencom.zencom_shop.modules.shared.contracts.events.orders.OrderCanceledIntegrationEvent;
+import com.example.zencom.zencom_shop.modules.shared.contracts.events.orders.OrderCreatedIntegrationEvent;
+import com.example.zencom.zencom_shop.modules.shared.contracts.events.orders.OrderPaidIntegrationEvent;
 import com.example.zencom.zencom_shop.modules.shared.contracts.events.payments.PaymentPaidIntegrationEvent;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -25,7 +28,9 @@ public class RabbitMqConfig {
 
     public static final String CART_QUEUE = "cart.queue";
     public static final String NOTIFICATION_QUEUE = "notification.queue";
-    public static final String CATALOG_QUEUE = "catalog.queue";
+    public static final String CATALOG_ORDER_CREATED_QUEUE = "catalog.order-created.queue";
+    public static final String CATALOG_ORDER_CANCELED_QUEUE = "catalog.order-canceled.queue";
+    public static final String CATALOG_ORDER_PAID_QUEUE = "catalog.order-paid.queue";
     public static final String ORDERS_QUEUE = "orders.queue";
 
     @Bean
@@ -83,8 +88,18 @@ public class RabbitMqConfig {
         return QueueBuilder.durable(NOTIFICATION_QUEUE).build();
     }
     @Bean
-    public Queue catalogQueue() {
-        return QueueBuilder.durable(CATALOG_QUEUE).build();
+    public Queue catalogOrderCreatedQueue() {
+        return QueueBuilder.durable(CATALOG_ORDER_CREATED_QUEUE).build();
+    }
+
+    @Bean
+    public Queue catalogOrderCanceledQueue() {
+        return QueueBuilder.durable(CATALOG_ORDER_CANCELED_QUEUE).build();
+    }
+
+    @Bean
+    public Queue catalogOrderPaidQueue() {
+        return QueueBuilder.durable(CATALOG_ORDER_PAID_QUEUE).build();
     }
     @Bean
     public Queue ordersQueue() {
@@ -107,8 +122,36 @@ public class RabbitMqConfig {
 
     // Catalog listens to all Order's events
     @Bean
-    public Binding catalogOnOrders(TopicExchange integrationEventExchange, Queue catalogQueue) {
-        return BindingBuilder.bind(catalogQueue).to(integrationEventExchange).with("orders.*");
+    public Binding catalogOnOrderCreated(
+            TopicExchange integrationEventExchange,
+            Queue catalogOrderCreatedQueue
+    ) {
+        return BindingBuilder
+                .bind(catalogOrderCreatedQueue)
+                .to(integrationEventExchange)
+                .with(OrderCreatedIntegrationEvent.ROUTING_KEY);
+    }
+
+    @Bean
+    public Binding catalogOnOrderCanceled(
+            TopicExchange integrationEventExchange,
+            Queue catalogOrderCanceledQueue
+    ) {
+        return BindingBuilder
+                .bind(catalogOrderCanceledQueue)
+                .to(integrationEventExchange)
+                .with(OrderCanceledIntegrationEvent.ROUTING_KEY);
+    }
+
+    @Bean
+    public Binding catalogOnOrderPaid(
+            TopicExchange integrationEventExchange,
+            Queue catalogOrderPaidQueue
+    ) {
+        return BindingBuilder
+                .bind(catalogOrderPaidQueue)
+                .to(integrationEventExchange)
+                .with(OrderPaidIntegrationEvent.ROUTING_KEY);
     }
 
     // Notification listens to all Order's events

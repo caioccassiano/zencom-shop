@@ -29,7 +29,6 @@ public class OrderIntegrationEventMapper implements IntegrationEventEmitter.Doma
             var payload = new OrderCreatedIntegrationEvent.Payload(
                     order.getOrderId().getId(),
                     order.getUserId(),
-                    order.getReservationId(),
                     order.getTotal(),
                     items
             );
