@@ -1,5 +1,7 @@
 package com.example.zencom.zencom_shop.modules.catalog.adapters.out.inventory.inventoryItem;
 
+import com.example.zencom.zencom_shop.modules.catalog.adapters.out.product.ProductJpaEntity;
+import com.example.zencom.zencom_shop.modules.catalog.domain.entities.product.Product;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,6 +21,10 @@ public class InventoryItemJpaEntity {
     @Id
     @Column(name = "product_id", nullable = false, unique = true)
     private UUID productId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private ProductJpaEntity product;
 
     @Column(name = "available_quantity", nullable = false)
     private Integer availableQuantity;
