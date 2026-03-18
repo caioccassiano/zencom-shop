@@ -7,7 +7,6 @@ import com.example.zencom.zencom_shop.modules.catalog.application.mappers.Produc
 import com.example.zencom.zencom_shop.modules.catalog.application.ports.in.product.UpdateProductUseCase;
 import com.example.zencom.zencom_shop.modules.catalog.application.ports.out.product.ProductRepository;
 import com.example.zencom.zencom_shop.modules.catalog.domain.entities.product.Product;
-import com.example.zencom.zencom_shop.modules.shared.application.utils.IntegrationEventEmitter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
