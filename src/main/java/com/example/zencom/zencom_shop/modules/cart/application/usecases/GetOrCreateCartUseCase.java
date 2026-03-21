@@ -6,7 +6,11 @@ import com.example.zencom.zencom_shop.modules.cart.application.exception.Invalid
 import com.example.zencom.zencom_shop.modules.cart.application.mappers.CartResultMapper;
 import com.example.zencom.zencom_shop.modules.cart.application.ports.cart.CartRepository;
 import com.example.zencom.zencom_shop.modules.cart.domain.entities.Cart;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Service
+@Transactional
 public class GetOrCreateCartUseCase {
     private final CartRepository cartRepository;
 

@@ -8,9 +8,13 @@ import com.example.zencom.zencom_shop.modules.cart.application.mappers.CartResul
 import com.example.zencom.zencom_shop.modules.cart.application.ports.cart.CartRepository;
 import com.example.zencom.zencom_shop.modules.cart.domain.entities.Cart;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+@Service
+@Transactional
 public class UpdateCartItemQuantityUseCase {
     private final CartRepository cartRepository;
 

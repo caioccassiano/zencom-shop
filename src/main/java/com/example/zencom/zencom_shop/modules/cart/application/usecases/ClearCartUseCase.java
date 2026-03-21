@@ -5,9 +5,13 @@ import com.example.zencom.zencom_shop.modules.cart.application.exception.CartNot
 import com.example.zencom.zencom_shop.modules.cart.application.ports.cart.CartRepository;
 import com.example.zencom.zencom_shop.modules.cart.domain.entities.Cart;
 import com.example.zencom.zencom_shop.modules.cart.domain.vo.CartId;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+@Service
+@Transactional
 public class ClearCartUseCase {
     private final CartRepository cartRepository;
 

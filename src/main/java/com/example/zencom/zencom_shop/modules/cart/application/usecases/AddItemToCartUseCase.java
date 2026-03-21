@@ -8,9 +8,13 @@ import com.example.zencom.zencom_shop.modules.cart.application.ports.cart.CartRe
 import com.example.zencom.zencom_shop.modules.cart.application.ports.catalog.CatalogPort;
 import com.example.zencom.zencom_shop.modules.cart.domain.entities.Cart;
 import com.example.zencom.zencom_shop.modules.shared.ids.ProductId;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+@Service
+@Transactional
 public class AddItemToCartUseCase {
     private final CartRepository cartRepository;
     private final CatalogPort catalogPort;
