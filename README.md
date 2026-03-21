@@ -88,7 +88,7 @@ The application is organized into modular bounded contexts:
 ## 📦 Prerequisites
 
 - Java 21 or higher
-- Docker and Docker Compose (for PostgreSQL)
+- Docker and Docker Compose (for PostgreSQL and RabbitMQ)
 - Gradle 8.x (or use the included wrapper)
 
 ## 🚀 Getting Started
@@ -100,25 +100,35 @@ git clone <repository-url>
 cd zencom-shop
 ```
 
-### 2. Start PostgreSQL Database
+### 2. Configure Environment Variables
+
+Create a `.env` file in the project root (see `.env.example` if available):
+
+```env
+POSTGRES_DB=zencom
+POSTGRES_USER=zencom
+POSTGRES_PASSWORD=zencom
+RABBIT_USER=guest
+RABBIT_PASSWORD=guest
+```
+
+### 3. Start Infrastructure
 
 ```bash
 docker-compose up -d
 ```
 
-This will start a PostgreSQL instance with:
-- Database: `zencom`
-- Username: `zencom`
-- Password: `zencom`
-- Port: `5435` (mapped from container's 5432)
+This will start:
+- **PostgreSQL** on port `5435`
+- **RabbitMQ** on port `5672` (management UI at `http://localhost:15672`)
 
-### 3. Build the Application
+### 4. Build the Application
 
 ```bash
 ./gradlew build
 ```
 
-### 4. Run the Application
+### 5. Run the Application
 
 ```bash
 ./gradlew bootRun
@@ -133,7 +143,7 @@ The application will start on `http://localhost:8080`
 Configure the application via `src/main/resources/application.properties`:
 
 ```properties
-# Database Configuration
+# Database
 spring.datasource.url=jdbc:postgresql://localhost:5435/zencom
 spring.datasource.username=zencom
 spring.datasource.password=zencom
@@ -141,6 +151,12 @@ spring.datasource.password=zencom
 # JPA/Hibernate
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.open-in-view=false
+
+# RabbitMQ
+spring.rabbitmq.host=localhost
+spring.rabbitmq.port=5672
+spring.rabbitmq.username=guest
+spring.rabbitmq.password=guest
 
 # JWT Security
 security.jwt.secret=<your-secret-key>
@@ -188,9 +204,49 @@ Response: 200 OK
 }
 ```
 
+### Cart Endpoints
+
+All cart endpoints require authentication.
+
+#### Get or Create Cart
+```http
+GET /api/v1/cart
+Authorization: Bearer <token>
+```
+
+#### Add Item
+```http
+POST /api/v1/cart/items
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "product_id": "uuid",
+  "quantity": 2
+}
+```
+
+#### Update Item Quantity
+```http
+PATCH /api/v1/cart/items/{productId}
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "quantity": 3
+}
+```
+> Send `quantity: 0` to remove the item.
+
+#### Clear Cart
+```http
+DELETE /api/v1/cart
+Authorization: Bearer <token>
+```
+
 ### Protected Endpoints
 
-All other endpoints require a valid JWT token in the Authorization header:
+All endpoints except `/api/v1/auth/**` require a valid JWT token:
 
 ```http
 Authorization: Bearer <your-jwt-token>
@@ -248,23 +304,26 @@ Each module follows a consistent structure:
 ```
 module/
 ├── domain/                 # Pure business logic
-│   ├── entities/          # Domain entities
+│   ├── entities/          # Domain entities and aggregate roots
 │   ├── enums/             # Domain enumerations
 │   ├── events/            # Domain events
 │   ├── exceptions/        # Domain exceptions
 │   └── vo/                # Value objects
 ├── application/           # Application layer
-│   ├── dtos/              # Data transfer objects
+│   ├── dtos/              # Data transfer objects (input/ and output/)
 │   ├── ports/             # Port interfaces
-│   │   ├── in/           # Input ports (use cases)
+│   │   ├── in/           # Input ports (use case interfaces)
 │   │   └── out/          # Output ports (repositories, external services)
-│   ├── usecases/         # Use case implementations
-│   ├── mappers/          # Data mappers
+│   ├── usecases/         # Use case implementations (@Service @Transactional)
+│   ├── mappers/          # Application-level mappers (domain → DTO)
 │   └── exceptions/       # Application exceptions
-├── adapters/             # Infrastructure layer
-│   ├── in/               # Incoming adapters (REST, messaging)
-│   └── out/              # Outgoing adapters (database, external APIs)
-└── config/               # Module configuration
+└── adapters/             # Infrastructure layer
+    ├── in/
+    │   ├── web/          # REST controllers, request/response DTOs, HTTP mappers
+    │   └── rabbitmq/     # RabbitMQ listeners and mappers
+    └── out/
+        ├── <entity>/     # JpaEntity, JpaRepository, PersistenceMapper, RepositoryAdapter
+        └── <module>/     # Adapters implementing ports to other modules
 ```
 
 ## 🔐 Security

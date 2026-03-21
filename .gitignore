@@ -38,4 +38,7 @@ out/
 .application-dev.properties
 .env
 
+### Claude Code ###
+CLAUDE.md
+
 
